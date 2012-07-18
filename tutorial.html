@@ -1,0 +1,320 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tutorial &mdash; tigger 0.0.1dev-99d4d5a documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.1dev-99d4d5a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tigger 0.0.1dev-99d4d5a documentation" href="index.html" />
+    <link rel="next" title="CLUDA layer" href="cluda.html" />
+    <link rel="prev" title="Tigger, the pure Python GPGPU library" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="cluda.html" title="CLUDA layer"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Tigger, the pure Python GPGPU library"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">tigger 0.0.1dev-99d4d5a documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This section contains brief illustration of what Tigger does.
+For detailed information see corresponding reference pages.</p>
+<div class="section" id="cluda-basics">
+<h2>CLUDA basics<a class="headerlink" href="#cluda-basics" title="Permalink to this headline">¶</a></h2>
+<p>CLUDA is an abstraction layer on top of PyCuda/PyOpenCL.
+Its main purpose is to separate the rest of Tigger from the difference in their APIs, but it can be used by itself too for some simple tasks.</p>
+<p>Consider the following example, which is very similar to the one from the index page on PyCuda documentation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">tigger.cluda</span> <span class="kn">as</span> <span class="nn">cluda</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">256</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">cluda</span><span class="o">.</span><span class="n">cuda_api</span><span class="p">()</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Context</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="n">module</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">KERNEL void multiply_them(</span>
+<span class="s">    GLOBAL_MEM float *dest,</span>
+<span class="s">    GLOBAL_MEM float *a,</span>
+<span class="s">    GLOBAL_MEM float *b)</span>
+<span class="s">{</span>
+<span class="s">  const int i = LID_0;</span>
+<span class="s">  dest[i] = a[i] * b[i];</span>
+<span class="s">}</span>
+<span class="s">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="n">multiply_them</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">multiply_them</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">a_dev</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">b_dev</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">dest_dev</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a_dev</span><span class="p">)</span>
+
+<span class="n">multiply_them</span><span class="p">(</span><span class="n">dest_dev</span><span class="p">,</span> <span class="n">a_dev</span><span class="p">,</span> <span class="n">b_dev</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">grid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="k">print</span> <span class="n">ctx</span><span class="o">.</span><span class="n">from_device</span><span class="p">(</span><span class="n">dest_dev</span><span class="p">)</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+</pre></div>
+</div>
+<p>If you are familiar with PyCuda or PyOpenCL, you will easily understand all the steps we have done here.
+The <tt class="docutils literal"><span class="pre">cluda.cuda_api()</span></tt> call is the only place where CUDA is mentioned, and if you replace it with <tt class="docutils literal"><span class="pre">cluda.ocl_api()</span></tt> it will be enough to make the code use OpenCL.
+The abstraction is achieved by using generic API module on Python side, and special macros (<tt class="docutils literal"><span class="pre">KERNEL</span></tt>, <tt class="docutils literal"><span class="pre">GLOBAL_MEM</span></tt> and others) on kernel side.</p>
+<p>The argument of <tt class="docutils literal"><span class="pre">compile</span></tt> method can also be a template, which is quite useful for metaprogramming, and also used to compensate for the lack of complex number operations in OpenCL.
+Let us illustrate both scenarios by making the initial example multiply complex arrays.
+The template engine of choice in Tigger is <a class="reference external" href="http://www.makotemplates.org">Mako</a>, and you are encouraged to read about it as it is quite useful. For the purpose of this tutorial all we need to know is that its synthax is <tt class="docutils literal"><span class="pre">${python_expression()}</span></tt>, which renders the expression result.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">tigger.cluda</span> <span class="kn">as</span> <span class="nn">cluda</span>
+<span class="kn">import</span> <span class="nn">tigger.cluda.dtypes</span> <span class="kn">as</span> <span class="nn">dtypes</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">256</span>
+<span class="n">dtype</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">complex64</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">cluda</span><span class="o">.</span><span class="n">cuda_api</span><span class="p">()</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Context</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="n">module</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">KERNEL void multiply_them(</span>
+<span class="s">    GLOBAL_MEM ${ctype} *dest,</span>
+<span class="s">    GLOBAL_MEM ${ctype} *a,</span>
+<span class="s">    GLOBAL_MEM ${ctype} *b)</span>
+<span class="s">{</span>
+<span class="s">  const int i = LID_0;</span>
+<span class="s">  dest[i] = ${func.mul(dtype, dtype)}(a[i], b[i]);</span>
+<span class="s">}</span>
+<span class="s">&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">ctype</span><span class="o">=</span><span class="n">dtypes</span><span class="o">.</span><span class="n">ctype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+
+<span class="n">multiply_them</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">multiply_them</span>
+
+<span class="n">r1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">r1</span> <span class="o">+</span> <span class="mi">1j</span> <span class="o">*</span> <span class="n">r2</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">r1</span> <span class="o">-</span> <span class="mi">1j</span> <span class="o">*</span> <span class="n">r2</span>
+<span class="n">a_dev</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">b_dev</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">dest_dev</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a_dev</span><span class="p">)</span>
+
+<span class="n">multiply_them</span><span class="p">(</span><span class="n">dest_dev</span><span class="p">,</span> <span class="n">a_dev</span><span class="p">,</span> <span class="n">b_dev</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">grid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="k">print</span> <span class="n">ctx</span><span class="o">.</span><span class="n">from_device</span><span class="p">(</span><span class="n">dest_dev</span><span class="p">)</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+</pre></div>
+</div>
+<p>Here we passed <tt class="docutils literal"><span class="pre">dtype</span></tt> and <tt class="docutils literal"><span class="pre">ctype</span></tt> values to the template, and used <tt class="docutils literal"><span class="pre">dtype</span></tt> to get the complex number multiplication function (<tt class="docutils literal"><span class="pre">func</span></tt> is one of the &#8220;built-in&#8221; values that are available in CLUDA templates).
+Alternatively, we could call <tt class="docutils literal"><span class="pre">dtypes.ctype()</span></tt> inside the template, as <tt class="docutils literal"><span class="pre">dtypes</span></tt> module is available there too.</p>
+<p>You may have notice that CLUDA context is created by means of a static method and not using the constructor.
+The constructor is reserved for more usual scenario, where you want to include some Tigger functionality in your bigger script, and want it to use the existing context and stream/queue.
+The <tt class="docutils literal"><span class="pre">Context</span></tt> constructor takes the PyCuda/PyOpenCL context and, optionally, the <tt class="docutils literal"><span class="pre">Stream</span></tt>/<tt class="docutils literal"><span class="pre">CommandQueue</span></tt> object as a <tt class="docutils literal"><span class="pre">stream</span></tt> parameter.
+All further operations with the Tigger context will be performed using given context and stream.
+If <tt class="docutils literal"><span class="pre">stream</span></tt> is not given, an internal stream will be created.</p>
+<p>For the complete list of things available in CLUDA, please consult <a class="reference internal" href="cluda.html#cluda-reference"><em>CLUDA reference</em></a>.</p>
+</div>
+<div class="section" id="computations-user-point-of-view">
+<h2>Computations, user point of view<a class="headerlink" href="#computations-user-point-of-view" title="Permalink to this headline">¶</a></h2>
+<p>Now it&#8217;s time for the main part of the functionality.
+Tigger provides GPGPU algorithms in the form of <tt class="docutils literal"><span class="pre">Computation</span></tt> classes and <tt class="docutils literal"><span class="pre">Transformation</span></tt> objects.
+Computations contain the algorithm itself; examples are matrix multiplication, reduction, sorting and so on.
+Transformations are elementwise operations on inputs/outputs of computations, used for scaling, typecast and other auxiliary purposes.
+Transformations are compiled into the main computation kernel and are therefore quite cheap in terms of performance.</p>
+<p>As an example, we will consider the matrix multiplication.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">import</span> <span class="nn">tigger.cluda</span> <span class="kn">as</span> <span class="nn">cluda</span>
+<span class="kn">from</span> <span class="nn">tigger.matrixmul</span> <span class="kn">import</span> <span class="n">MatrixMul</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">cluda</span><span class="o">.</span><span class="n">cuda_api</span><span class="p">()</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Context</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="n">shape1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">shape2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">shape1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">shape2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">a_dev</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">b_dev</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">res_dev</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">allocate</span><span class="p">((</span><span class="n">shape1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape2</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="n">dot</span> <span class="o">=</span> <span class="n">MatrixMul</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span><span class="o">.</span><span class="n">prepare_for</span><span class="p">(</span><span class="n">res_dev</span><span class="p">,</span> <span class="n">a_dev</span><span class="p">,</span> <span class="n">b_dev</span><span class="p">)</span>
+<span class="n">dot</span><span class="p">(</span><span class="n">res_dev</span><span class="p">,</span> <span class="n">a_dev</span><span class="p">,</span> <span class="n">b_dev</span><span class="p">)</span>
+
+<span class="n">res_reference</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">norm</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">from_device</span><span class="p">(</span><span class="n">res_dev</span><span class="p">)</span> <span class="o">-</span> <span class="n">res_reference</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">res_reference</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Most of the code above should be already familiar, with the exception of the creation of <tt class="docutils literal"><span class="pre">MatrixMul</span></tt> object.
+As any other class derived from <tt class="docutils literal"><span class="pre">Computation</span></tt>, it requires Tigger context as a constructor argument.
+The context serves as a source of data about the target API and device, and provides an execution stream.</p>
+<p>After the creation the object has to be prepared.
+It does not happen automatically, since there are two preparation methods, and since it is pointless to compile a kernel that will not be used anyway.
+First method can be seen in the example above.
+We know (from the documentation) that <tt class="docutils literal"><span class="pre">MatrixMul.__call__()</span></tt> takes three array parameters, and we ask it to prepare itself to properly handle arrays <tt class="docutils literal"><span class="pre">res_dev</span></tt>, <tt class="docutils literal"><span class="pre">a_dev</span></tt> and <tt class="docutils literal"><span class="pre">b_dev</span></tt> when they are passed to it.
+Alternatively, this information can be obtained from console by examining <tt class="docutils literal"><span class="pre">signature</span></tt> property of the object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dot</span> <span class="o">=</span> <span class="n">MatrixMul</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dot</span><span class="o">.</span><span class="n">signature</span>
+<span class="go">[(&#39;C&#39;, ArrayValue(None,None)), (&#39;A&#39;, ArrayValue(None,None)), (&#39;B&#39;, ArrayValue(None,None))]</span>
+</pre></div>
+</div>
+<p>The second method is directly specify the parameter basis &#8212; a dictionary of parameters which define all the internal preparations to be done (when <tt class="docutils literal"><span class="pre">prepare_for()</span></tt> is called, these are derived from its arguments).
+Again, looking at the reference, we can see that <tt class="docutils literal"><span class="pre">MatrixMul</span></tt> has a dozen of parameters, the most important being input and output arrays types and sizes.
+If, for some reason, actual arrays are not available at the time of preparation, <tt class="docutils literal"><span class="pre">prepare()</span></tt> with necessary keyword arguments can be called instead.</p>
+</div>
+<div class="section" id="transformations">
+<h2>Transformations<a class="headerlink" href="#transformations" title="Permalink to this headline">¶</a></h2>
+<p>Now imagine that you want to multiply complex matrices, but real and imaginary parts of your data are kept in separate arrays.
+You could create elementwise kernels that would join your data into arrays of complex values, but this would require additional storage and additional calls to GPU.
+Transformation API allows you to connect these transformations to the core computation &#8212; matrix multiplication &#8212; effectively adding the code into the main computation kernel and changing its signature.</p>
+<p>Let us change the previous example and connect transformations to it.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">import</span> <span class="nn">tigger.cluda</span> <span class="kn">as</span> <span class="nn">cluda</span>
+<span class="kn">import</span> <span class="nn">tigger.cluda.dtypes</span> <span class="kn">as</span> <span class="nn">dtypes</span>
+<span class="kn">from</span> <span class="nn">tigger.matrixmul</span> <span class="kn">import</span> <span class="n">MatrixMul</span>
+<span class="kn">from</span> <span class="nn">tigger</span> <span class="kn">import</span> <span class="n">Transformation</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">cluda</span><span class="o">.</span><span class="n">cuda_api</span><span class="p">()</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Context</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="n">shape1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">shape2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="n">a_re</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">shape1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">a_im</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">shape1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">b_re</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">shape2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">b_im</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">shape2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">a_re_dev</span><span class="p">,</span> <span class="n">a_im_dev</span><span class="p">,</span> <span class="n">b_re_dev</span><span class="p">,</span> <span class="n">b_im_dev</span> <span class="o">=</span> <span class="p">[</span><span class="n">ctx</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a_re</span><span class="p">,</span> <span class="n">a_im</span><span class="p">,</span> <span class="n">b_re</span><span class="p">,</span> <span class="n">b_im</span><span class="p">]]</span>
+
+<span class="n">res_dev</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">allocate</span><span class="p">((</span><span class="n">shape1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape2</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+
+<span class="n">dot</span> <span class="o">=</span> <span class="n">MatrixMul</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
+
+<span class="n">split_to_interleaved</span> <span class="o">=</span> <span class="n">Transformation</span><span class="p">(</span>
+    <span class="n">load</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">derive_s_from_lp</span><span class="o">=</span><span class="k">lambda</span> <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">:</span> <span class="p">[</span><span class="n">dtypes</span><span class="o">.</span><span class="n">complex_for</span><span class="p">(</span><span class="n">l1</span><span class="p">)],</span>
+    <span class="n">derive_lp_from_s</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s1</span><span class="p">:</span> <span class="p">([</span><span class="n">dtypes</span><span class="o">.</span><span class="n">real_for</span><span class="p">(</span><span class="n">s1</span><span class="p">),</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">real_for</span><span class="p">(</span><span class="n">s1</span><span class="p">)],</span> <span class="p">[]),</span>
+    <span class="n">code</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        ${store.s1}(${dtypes.complex_ctr(numpy.complex64)}(${load.l1}, ${load.l2}));</span>
+<span class="s">    &quot;&quot;&quot;</span><span class="p">)</span>
+<span class="n">dot</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">split_to_interleaved</span><span class="p">,</span> <span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;A_re&#39;</span><span class="p">,</span> <span class="s">&#39;A_im&#39;</span><span class="p">])</span>
+<span class="n">dot</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">split_to_interleaved</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;B_re&#39;</span><span class="p">,</span> <span class="s">&#39;B_im&#39;</span><span class="p">])</span>
+<span class="n">dot</span><span class="o">.</span><span class="n">prepare_for</span><span class="p">(</span><span class="n">res_dev</span><span class="p">,</span> <span class="n">a_re_dev</span><span class="p">,</span> <span class="n">a_im_dev</span><span class="p">,</span> <span class="n">b_re_dev</span><span class="p">,</span> <span class="n">b_im_dev</span><span class="p">)</span>
+
+<span class="n">dot</span><span class="p">(</span><span class="n">res_dev</span><span class="p">,</span> <span class="n">a_re_dev</span><span class="p">,</span> <span class="n">a_im_dev</span><span class="p">,</span> <span class="n">b_re_dev</span><span class="p">,</span> <span class="n">b_im_dev</span><span class="p">)</span>
+
+<span class="n">res_reference</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a_re</span> <span class="o">+</span> <span class="mi">1j</span> <span class="o">*</span> <span class="n">a_im</span><span class="p">,</span> <span class="n">b_re</span> <span class="o">+</span> <span class="mi">1j</span> <span class="o">*</span> <span class="n">b_im</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">norm</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">from_device</span><span class="p">(</span><span class="n">res_dev</span><span class="p">)</span> <span class="o">-</span> <span class="n">res_reference</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">res_reference</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This requires a bit of explanation.
+First, we create a transformation <tt class="docutils literal"><span class="pre">split_to_interleaved</span></tt> with two inputs and one output.
+Next two parameters are type derivation functions &#8212; they will be used internally to derive basis from <tt class="docutils literal"><span class="pre">prepare_for()</span></tt> arguments, and signature types from the basis, respectively.
+Code is a small Mako template, which uses two inputs <tt class="docutils literal"><span class="pre">${load.l1}</span></tt> and <tt class="docutils literal"><span class="pre">${load.l2}</span></tt>, passes them to the complex number constructor and stores the result in <tt class="docutils literal"><span class="pre">${store.s1}</span></tt>.
+This transformation is then attached to endpoints <tt class="docutils literal"><span class="pre">A</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt> &#8212; the input values of basic <tt class="docutils literal"><span class="pre">MatrixMul</span></tt> computation.
+Finally, we call <tt class="docutils literal"><span class="pre">prepare_for()</span></tt> which now has a new signature, and the resulting <tt class="docutils literal"><span class="pre">dot</span></tt> object now works with split complex numbers.</p>
+</div>
+<div class="section" id="computations-developer-point-of-view">
+<h2>Computations, developer point of view<a class="headerlink" href="#computations-developer-point-of-view" title="Permalink to this headline">¶</a></h2>
+<p>This part is currently under construction.
+For examples please refer to <tt class="docutils literal"><span class="pre">matrixmul.py</span></tt> and <tt class="docutils literal"><span class="pre">dummy.py</span></tt>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial</a><ul>
+<li><a class="reference internal" href="#cluda-basics">CLUDA basics</a></li>
+<li><a class="reference internal" href="#computations-user-point-of-view">Computations, user point of view</a></li>
+<li><a class="reference internal" href="#transformations">Transformations</a></li>
+<li><a class="reference internal" href="#computations-developer-point-of-view">Computations, developer point of view</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Tigger, the pure Python GPGPU library</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cluda.html"
+                        title="next chapter">CLUDA layer</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/tutorial.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="cluda.html" title="CLUDA layer"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Tigger, the pure Python GPGPU library"
+             >previous</a> |</li>
+        <li><a href="index.html">tigger 0.0.1dev-99d4d5a documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Bogdan Opanchuk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
