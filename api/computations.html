@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Computations &mdash; tigger 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="tigger 0.1.0 documentation" href="../index.html" />
+    <link rel="up" title="API reference" href="index.html" />
+    <link rel="next" title="Transformations" href="transformations.html" />
+    <link rel="prev" title="Core classes" href="core.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="transformations.html" title="Transformations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="Core classes"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">tigger 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-tigger.matrixmul">
+<span id="computations"></span><h1>Computations<a class="headerlink" href="#module-tigger.matrixmul" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="tigger.matrixmul.MatrixMul">
+<em class="property">class </em><tt class="descclassname">tigger.matrixmul.</tt><tt class="descname">MatrixMul</tt><big>(</big><em>ctx</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#tigger.matrixmul.MatrixMul" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiplies two matrices using last two dimensions and batching over remaining dimensions.
+For batching to work, the products of remaining dimensions should be equal
+(then the multiplication will be performed piecewise), or one of them should equal 1
+(then the multiplication will be batched over the remaining dimensions of the other matrix).</p>
+<dl class="method">
+<dt id="tigger.matrixmul.MatrixMul.prepare_for">
+<tt class="descname">prepare_for</tt><big>(</big><em>out</em>, <em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#tigger.matrixmul.MatrixMul.prepare_for" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>out</strong> &#8211; buffer for the result</li>
+<li><strong>a</strong> &#8211; first matrix</li>
+<li><strong>b</strong> &#8211; second matrix</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-tigger.elementwise"></span><dl class="class">
+<dt id="tigger.elementwise.Elementwise">
+<em class="property">class </em><tt class="descclassname">tigger.elementwise.</tt><tt class="descname">Elementwise</tt><big>(</big><em>ctx</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#tigger.elementwise.Elementwise" title="Permalink to this definition">¶</a></dt>
+<dd><p>A general class for elementwise computations.</p>
+<dl class="method">
+<dt id="tigger.elementwise.Elementwise.set_argnames">
+<tt class="descname">set_argnames</tt><big>(</big><em>outputs</em>, <em>inputs</em>, <em>scalars</em><big>)</big><a class="headerlink" href="#tigger.elementwise.Elementwise.set_argnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set argument names for the computation.
+This method should be called first after the creation of the
+<a class="reference internal" href="#tigger.elementwise.Elementwise" title="tigger.elementwise.Elementwise"><tt class="xref py py-class docutils literal"><span class="pre">Elementwise</span></tt></a> object.
+Returns <tt class="docutils literal"><span class="pre">self</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.elementwise.Elementwise.prepare_for">
+<tt class="descname">prepare_for</tt><big>(</big><em>*args</em>, <em>code=EMPTY</em><big>)</big><a class="headerlink" href="#tigger.elementwise.Elementwise.prepare_for" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> &#8211; arrays and scalars, according to the lists passed to <a class="reference internal" href="#tigger.elementwise.Elementwise.set_argnames" title="tigger.elementwise.Elementwise.set_argnames"><tt class="xref py py-meth docutils literal"><span class="pre">set_argnames()</span></tt></a>.</li>
+<li><strong>code</strong> &#8211; kernel code.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.elementwise.specialize_elementwise">
+<tt class="descclassname">tigger.elementwise.</tt><tt class="descname">specialize_elementwise</tt><big>(</big><em>outputs</em>, <em>inputs</em>, <em>scalars</em>, <em>code</em><big>)</big><a class="headerlink" href="#tigger.elementwise.specialize_elementwise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an Elementwise class specialized for given argument names and code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>outputs</strong> &#8211; a string or a list of strings with output argument names.</li>
+<li><strong>inputs</strong> &#8211; a string or a list of strings with input argument names.</li>
+<li><strong>scalars</strong> &#8211; <tt class="docutils literal"><span class="pre">None</span></tt>, a string, or a list of strings with scalar argument names.</li>
+<li><strong>code</strong> &#8211; <tt class="docutils literal"><span class="pre">dict(kernel,</span> <span class="pre">functions)</span></tt> with kernel code.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-tigger.transpose"></span><dl class="class">
+<dt id="tigger.transpose.Transpose">
+<em class="property">class </em><tt class="descclassname">tigger.transpose.</tt><tt class="descname">Transpose</tt><big>(</big><em>ctx</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#tigger.transpose.Transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the order of axes in a multidimensional array.
+Works analogous to <tt class="xref py py-func docutils literal"><span class="pre">numpy.transpose()</span></tt>.</p>
+<dl class="method">
+<dt id="tigger.transpose.Transpose.prepare_for">
+<tt class="descname">prepare_for</tt><big>(</big><em>output</em>, <em>input</em>, <em>axes=None</em><big>)</big><a class="headerlink" href="#tigger.transpose.Transpose.prepare_for" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>output</strong> &#8211; output array</li>
+<li><strong>input</strong> &#8211; input array</li>
+<li><strong>axes</strong> &#8211; tuple with the new axes order.
+If <tt class="docutils literal"><span class="pre">None</span></tt>, then axes will be reversed.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-tigger.reduce"></span><dl class="class">
+<dt id="tigger.reduce.Reduce">
+<em class="property">class </em><tt class="descclassname">tigger.reduce.</tt><tt class="descname">Reduce</tt><big>(</big><em>ctx</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#tigger.reduce.Reduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduces the array over given axis using given binary operation.</p>
+<dl class="method">
+<dt id="tigger.reduce.Reduce.prepare_for">
+<tt class="descname">prepare_for</tt><big>(</big><em>output</em>, <em>input</em>, <em>axis=None</em>, <em>code=SUM</em><big>)</big><a class="headerlink" href="#tigger.reduce.Reduce.prepare_for" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>output</strong> &#8211; output buffer</li>
+<li><strong>input</strong> &#8211; input buffer</li>
+<li><strong>axis</strong> &#8211; axis over which reduction is performed.
+If <tt class="docutils literal"><span class="pre">None</span></tt>, the whole array will be reduced to a single element.</li>
+<li><strong>code</strong> &#8211; dictionary {kernel, functions} with the reduction code.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core.html"
+                        title="previous chapter">Core classes</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="transformations.html"
+                        title="next chapter">Transformations</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/computations.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="transformations.html" title="Transformations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="Core classes"
+             >previous</a> |</li>
+        <li><a href="../index.html">tigger 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >API reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Bogdan Opanchuk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,794 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CLUDA layer &mdash; tigger 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="tigger 0.1.0 documentation" href="../index.html" />
+    <link rel="up" title="API reference" href="index.html" />
+    <link rel="next" title="Core classes" href="core.html" />
+    <link rel="prev" title="Helpers" href="helpers.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="Core classes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="helpers.html" title="Helpers"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">tigger 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cluda-layer">
+<span id="api-cluda"></span><h1>CLUDA layer<a class="headerlink" href="#cluda-layer" title="Permalink to this headline">¶</a></h1>
+<p>CLUDA is the foundation of the tigger.
+It provides unified access to basic features of CUDA and OpenCL, such as memory operations, compilation and so on.
+It can also be used by itself, if you want to write GPU API-independent programs and happen to need the small subset of GPU API.
+The terminology is borrowed from OpenCL, since it is a more general API.</p>
+<div class="section" id="root-level-interface">
+<h2>Root level interface<a class="headerlink" href="#root-level-interface" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions for API discovery.</p>
+<span class="target" id="module-tigger.cluda"></span><dl class="data">
+<dt id="tigger.cluda.APIS">
+<tt class="descclassname">tigger.cluda.</tt><tt class="descname">APIS</tt><em class="property"> = ['cuda', 'ocl']</em><a class="headerlink" href="#tigger.cluda.APIS" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of identifiers for all known (not necessarily available for the current system) APIs</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="tigger.cluda.API_CUDA">
+<tt class="descclassname">tigger.cluda.</tt><tt class="descname">API_CUDA</tt><em class="property"> = 'cuda'</em><a class="headerlink" href="#tigger.cluda.API_CUDA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identifier for the PyCUDA-based API</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="tigger.cluda.API_OCL">
+<tt class="descclassname">tigger.cluda.</tt><tt class="descname">API_OCL</tt><em class="property"> = 'ocl'</em><a class="headerlink" href="#tigger.cluda.API_OCL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identifier for the PyOpenCL-based API</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.api">
+<tt class="descclassname">tigger.cluda.</tt><tt class="descname">api</tt><big>(</big><em>api_id</em><big>)</big><a class="headerlink" href="#tigger.cluda.api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns API module with the generalized interface <a class="reference internal" href="#module-tigger.cluda.api" title="tigger.cluda.api"><tt class="xref py py-mod docutils literal"><span class="pre">tigger.cluda.api</span></tt></a>
+for the given identifier.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.cuda_api">
+<tt class="descclassname">tigger.cluda.</tt><tt class="descname">cuda_api</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.cluda.cuda_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns API module for CUDA.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.ocl_api">
+<tt class="descclassname">tigger.cluda.</tt><tt class="descname">ocl_api</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.cluda.ocl_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns API module for OpenCL.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.supported_apis">
+<tt class="descclassname">tigger.cluda.</tt><tt class="descname">supported_apis</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.cluda.supported_apis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns list of identifiers of supported APIs.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.supports_api">
+<tt class="descclassname">tigger.cluda.</tt><tt class="descname">supports_api</tt><big>(</big><em>api_id</em><big>)</big><a class="headerlink" href="#tigger.cluda.supports_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if given API is supported.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="api-module">
+<h2>API module<a class="headerlink" href="#api-module" title="Permalink to this headline">¶</a></h2>
+<p>Modules for all APIs have the same generalized interface.
+It is referred here (and references from other parts of this documentation) as <a class="reference internal" href="#module-tigger.cluda.api" title="tigger.cluda.api"><tt class="xref py py-mod docutils literal"><span class="pre">tigger.cluda.api</span></tt></a>.</p>
+<span class="target" id="module-tigger.cluda.api"></span><dl class="data">
+<dt id="tigger.cluda.api.API_ID">
+<tt class="descclassname">tigger.cluda.api.</tt><tt class="descname">API_ID</tt><a class="headerlink" href="#tigger.cluda.api.API_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identifier of this API.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.api.get_platforms">
+<tt class="descclassname">tigger.cluda.api.</tt><tt class="descname">get_platforms</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.cluda.api.get_platforms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of platform objects.
+The methods and attributes available are described in the reference entry for <a class="reference internal" href="#tigger.cluda.api.Platform" title="tigger.cluda.api.Platform"><tt class="xref py py-class docutils literal"><span class="pre">Platform</span></tt></a>.
+In case of <tt class="docutils literal"><span class="pre">API_OCL</span></tt> returned objects are actually instances of <tt class="xref py py-class docutils literal"><span class="pre">pyopencl.Platform</span></tt>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tigger.cluda.api.Platform">
+<em class="property">class </em><tt class="descclassname">tigger.cluda.api.</tt><tt class="descname">Platform</tt><a class="headerlink" href="#tigger.cluda.api.Platform" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="tigger.cluda.api.Platform.name">
+<tt class="descname">name</tt><a class="headerlink" href="#tigger.cluda.api.Platform.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with platform name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tigger.cluda.api.Platform.vendor">
+<tt class="descname">vendor</tt><a class="headerlink" href="#tigger.cluda.api.Platform.vendor" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with platform vendor.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tigger.cluda.api.Platform.version">
+<tt class="descname">version</tt><a class="headerlink" href="#tigger.cluda.api.Platform.version" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with platform version.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Platform.get_devices">
+<tt class="descname">get_devices</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.cluda.api.Platform.get_devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of device objects from the platform.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tigger.cluda.api.Context">
+<em class="property">class </em><tt class="descclassname">tigger.cluda.api.</tt><tt class="descname">Context</tt><big>(</big><em>context</em>, <em>queue=None</em>, <em>fast_math=True</em>, <em>async=True</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps existing context in the CLUDA context object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>context</strong> (<tt class="xref py py-class docutils literal"><span class="pre">pycuda.driver.Context</span></tt> object for <tt class="docutils literal"><span class="pre">API_CUDA</span></tt>, or <tt class="xref py py-class docutils literal"><span class="pre">pyopencl.Context</span></tt> object for <tt class="docutils literal"><span class="pre">API_OCL</span></tt>.) &#8211; a context to wrap</li>
+<li><strong>queue</strong> (<tt class="xref py py-class docutils literal"><span class="pre">pycuda.driver.Stream</span></tt> object for <tt class="docutils literal"><span class="pre">API_CUDA</span></tt>, or <tt class="xref py py-class docutils literal"><span class="pre">pyopencl.CommandQueue</span></tt> object for <tt class="docutils literal"><span class="pre">API_OCL</span></tt>.) &#8211; a queue to serialize operations to.
+If not given, a new one will be created internally.</li>
+<li><strong>fast_math</strong> &#8211; whether to enable fast mathematical operations during compilation.</li>
+<li><strong>async</strong> &#8211; whether to execute all operations with this context asynchronously (you would generally want to set it to <tt class="docutils literal"><span class="pre">False</span></tt> only for profiling purposes).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt id="tigger.cluda.api.Context.create">
+<em class="property">classmethod </em><tt class="descname">create</tt><big>(</big><em>device=None</em>, <em>fast_math=True</em>, <em>async=True</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the new <a class="reference internal" href="#tigger.cluda.api.Context" title="tigger.cluda.api.Context"><tt class="xref py py-class docutils literal"><span class="pre">tigger.cluda.api.Context</span></tt></a> object with its own context and queues inside.
+Intended for cases when you want to base your whole program on CLUDA.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>device</strong> (<tt class="xref py py-class docutils literal"><span class="pre">pycuda.driver.Device</span></tt> object for <tt class="docutils literal"><span class="pre">API_CUDA</span></tt>, or <tt class="xref py py-class docutils literal"><span class="pre">pyopencl.Device</span></tt> object for <tt class="docutils literal"><span class="pre">API_OCL</span></tt>.) &#8211; device to create context for, element of the list returned by <a class="reference internal" href="#tigger.cluda.api.Platform.get_devices" title="tigger.cluda.api.Platform.get_devices"><tt class="xref py py-meth docutils literal"><span class="pre">Platform.get_devices()</span></tt></a>.
+If not given, the device will be selected internally.</li>
+<li><strong>fast_math</strong> &#8211; same as in <a class="reference internal" href="#tigger.cluda.api.Context" title="tigger.cluda.api.Context"><tt class="xref py py-class docutils literal"><span class="pre">Context</span></tt></a>.</li>
+<li><strong>async</strong> &#8211; same as in <a class="reference internal" href="#tigger.cluda.api.Context" title="tigger.cluda.api.Context"><tt class="xref py py-class docutils literal"><span class="pre">Context</span></tt></a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tigger.cluda.api.Context.device_params">
+<tt class="descname">device_params</tt><a class="headerlink" href="#tigger.cluda.api.Context.device_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance of <a class="reference internal" href="#tigger.cluda.api.DeviceParameters" title="tigger.cluda.api.DeviceParameters"><tt class="xref py py-class docutils literal"><span class="pre">DeviceParameters</span></tt></a> class for this context&#8217;s device.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Context.supports_dtype">
+<tt class="descname">supports_dtype</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context.supports_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if given <tt class="docutils literal"><span class="pre">numpy</span></tt> dtype can be used in kernels compiled using this context.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Context.allocate">
+<tt class="descname">allocate</tt><big>(</big><em>shape</em>, <em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context.allocate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an <a class="reference internal" href="#tigger.cluda.api.Array" title="tigger.cluda.api.Array"><tt class="xref py py-class docutils literal"><span class="pre">Array</span></tt></a> on GPU with given <tt class="docutils literal"><span class="pre">shape</span></tt> and <tt class="docutils literal"><span class="pre">dtype</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Context.empty_like">
+<tt class="descname">empty_like</tt><big>(</big><em>arr</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context.empty_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allocates an array on GPU with the same shape and dtype as <tt class="docutils literal"><span class="pre">arr</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Context.to_device">
+<tt class="descname">to_device</tt><big>(</big><em>arr</em>, <em>dest=None</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context.to_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies an array to the device memory.
+If <tt class="docutils literal"><span class="pre">dest</span></tt> is specified, it is used as the destination, and the method returns <tt class="docutils literal"><span class="pre">None</span></tt>.
+Otherwise the destination array is created internally and returned from the method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Context.from_device">
+<tt class="descname">from_device</tt><big>(</big><em>arr</em>, <em>dest=None</em>, <em>async=False</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context.from_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transfers the contents of <tt class="docutils literal"><span class="pre">arr</span></tt> to a <tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt> object.
+The effect of <tt class="docutils literal"><span class="pre">dest</span></tt> parameter is the same as in <a class="reference internal" href="#tigger.cluda.api.Context.to_device" title="tigger.cluda.api.Context.to_device"><tt class="xref py py-meth docutils literal"><span class="pre">to_device()</span></tt></a>.
+If <tt class="docutils literal"><span class="pre">async</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt>, the transfer is asynchronous (the context-wide asynchronisity setting does not apply here).</p>
+<p>Alternatively, one might use <a class="reference internal" href="#tigger.cluda.api.Array.get" title="tigger.cluda.api.Array.get"><tt class="xref py py-meth docutils literal"><span class="pre">Array.get()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Context.copy_array">
+<tt class="descname">copy_array</tt><big>(</big><em>arr</em>, <em>dest=None</em>, <em>src_offset=0</em>, <em>dest_offset=0</em>, <em>size=None</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context.copy_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies array on device.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dest</strong> &#8211; the effect is the same as in <a class="reference internal" href="#tigger.cluda.api.Context.to_device" title="tigger.cluda.api.Context.to_device"><tt class="xref py py-meth docutils literal"><span class="pre">to_device()</span></tt></a>.</li>
+<li><strong>src_offset</strong> &#8211; offset (in items of <tt class="docutils literal"><span class="pre">arr.dtype</span></tt>) in the source array.</li>
+<li><strong>dest_offset</strong> &#8211; offset (in items of <tt class="docutils literal"><span class="pre">arr.dtype</span></tt>) in the destination array.</li>
+<li><strong>size</strong> &#8211; how many elements of <tt class="docutils literal"><span class="pre">arr.dtype</span></tt> to copy.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Context.synchronize">
+<tt class="descname">synchronize</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context.synchronize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forcefully synchronize the context with the main thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Context.compile">
+<tt class="descname">compile</tt><big>(</big><em>template_src</em>, <em>render_kwds=None</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context.compile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a module object from the given template.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>template_src</strong> &#8211; Mako template source to render</li>
+<li><strong>render_kwds</strong> &#8211; a dictionary with additional parameters
+to be used while rendering the template.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a <a class="reference internal" href="#tigger.cluda.api.Module" title="tigger.cluda.api.Module"><tt class="xref py py-class docutils literal"><span class="pre">Module</span></tt></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Context.compile_static">
+<tt class="descname">compile_static</tt><big>(</big><em>template_src</em>, <em>name</em>, <em>global_size</em>, <em>local_size=None</em>, <em>local_mem=0</em>, <em>render_kwds=None</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context.compile_static" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a kernel object with fixed call sizes,
+which allows to overcome some backend limitations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>template_src</strong> &#8211; Mako template source to render</li>
+<li><strong>name</strong> &#8211; name of the kernel function</li>
+<li><strong>global_size</strong> &#8211; global size to be used</li>
+<li><strong>local_size</strong> &#8211; local size to be used.
+If <tt class="docutils literal"><span class="pre">None</span></tt>, some suitable one will be picked.</li>
+<li><strong>local_mem</strong> &#8211; (<strong>CUDA API only</strong>) amount of dynamically allocated local memory to be used (in bytes).</li>
+<li><strong>render_kwds</strong> &#8211; a dictionary with additional parameters
+to be used while rendering the template.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a <a class="reference internal" href="#tigger.cluda.api.StaticKernel" title="tigger.cluda.api.StaticKernel"><tt class="xref py py-class docutils literal"><span class="pre">StaticKernel</span></tt></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Context.release">
+<tt class="descname">release</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.cluda.api.Context.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Release and invalidate the context.
+This happens automatically on object deletion, so call it only if you want to release resources earlier than object lifecycle takes care of that.</p>
+<p>Does not have any effect if the <a class="reference internal" href="#tigger.cluda.api.Context" title="tigger.cluda.api.Context"><tt class="xref py py-class docutils literal"><span class="pre">Context</span></tt></a> was created as a wrapper for the existing context.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tigger.cluda.api.Array">
+<em class="property">class </em><tt class="descclassname">tigger.cluda.api.</tt><tt class="descname">Array</tt><a class="headerlink" href="#tigger.cluda.api.Array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Actual array class is different depending on the API: <tt class="xref py py-class docutils literal"><span class="pre">pycuda.gpuarray.GPUArray</span></tt> for <tt class="docutils literal"><span class="pre">API_CUDA</span></tt> and <tt class="xref py py-class docutils literal"><span class="pre">pyopencl.array.Array</span></tt> for <tt class="docutils literal"><span class="pre">API_OCL</span></tt>.
+This is an interface they both provide.</p>
+<dl class="attribute">
+<dt id="tigger.cluda.api.Array.shape">
+<tt class="descname">shape</tt><a class="headerlink" href="#tigger.cluda.api.Array.shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="tigger.cluda.api.Array.dtype">
+<tt class="descname">dtype</tt><a class="headerlink" href="#tigger.cluda.api.Array.dtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Array.get">
+<tt class="descname">get</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.cluda.api.Array.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt> with the contents of the array.
+Synchronizes the context.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tigger.cluda.api.DeviceParameters">
+<em class="property">class </em><tt class="descclassname">tigger.cluda.api.</tt><tt class="descname">DeviceParameters</tt><a class="headerlink" href="#tigger.cluda.api.DeviceParameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>An assembly of device parameters necessary for optimizations.</p>
+<dl class="attribute">
+<dt id="tigger.cluda.api.DeviceParameters.max_work_group_size">
+<tt class="descname">max_work_group_size</tt><a class="headerlink" href="#tigger.cluda.api.DeviceParameters.max_work_group_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum block size for kernels.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tigger.cluda.api.DeviceParameters.max_work_item_sizes">
+<tt class="descname">max_work_item_sizes</tt><a class="headerlink" href="#tigger.cluda.api.DeviceParameters.max_work_item_sizes" title="Permalink to this definition">¶</a></dt>
+<dd><p>List with maximum local_size for each dimension.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tigger.cluda.api.DeviceParameters.max_num_groups">
+<tt class="descname">max_num_groups</tt><a class="headerlink" href="#tigger.cluda.api.DeviceParameters.max_num_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>List with maximum number of workgroups for each dimension.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tigger.cluda.api.DeviceParameters.warp_size">
+<tt class="descname">warp_size</tt><a class="headerlink" href="#tigger.cluda.api.DeviceParameters.warp_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Warp size (nVidia), or wavefront size (AMD), or SIMD width is supposed to be the number of threads that are executed simultaneously on the same computation unit (so you can assume that they are perfectly synchronized).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tigger.cluda.api.DeviceParameters.local_mem_banks">
+<tt class="descname">local_mem_banks</tt><a class="headerlink" href="#tigger.cluda.api.DeviceParameters.local_mem_banks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of local (shared in CUDA) memory banks is a number of successive 32-bit words you can access without getting bank conflicts.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tigger.cluda.api.Module">
+<em class="property">class </em><tt class="descclassname">tigger.cluda.api.</tt><tt class="descname">Module</tt><a class="headerlink" href="#tigger.cluda.api.Module" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="tigger.cluda.api.Module.source">
+<tt class="descname">source</tt><a class="headerlink" href="#tigger.cluda.api.Module.source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains module source code.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tigger.cluda.api.Module.kernel_name">
+<tt class="descname">kernel_name</tt><a class="headerlink" href="#tigger.cluda.api.Module.kernel_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains <a class="reference internal" href="#tigger.cluda.api.Kernel" title="tigger.cluda.api.Kernel"><tt class="xref py py-class docutils literal"><span class="pre">Kernel</span></tt></a> object for the kernel <tt class="docutils literal"><span class="pre">kernel_name</span></tt>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tigger.cluda.api.Kernel">
+<em class="property">class </em><tt class="descclassname">tigger.cluda.api.</tt><tt class="descname">Kernel</tt><a class="headerlink" href="#tigger.cluda.api.Kernel" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="tigger.cluda.api.Kernel.prepare">
+<tt class="descname">prepare</tt><big>(</big><em>global_size</em>, <em>local_size=None</em>, <em>local_mem=0</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Kernel.prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare kernel for execution with given parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>global_size</strong> &#8211; an integer or a tuple of integers,
+specifying total number of work items to run.</li>
+<li><strong>local_size</strong> &#8211; an integer or a tuple of integers,
+specifying the size of a single work group.
+Should have the same number of dimensions as <tt class="docutils literal"><span class="pre">global_size</span></tt>.
+If <tt class="docutils literal"><span class="pre">None</span></tt> is passed, some <tt class="docutils literal"><span class="pre">local_size</span></tt> will be picked internally.</li>
+<li><strong>local_mem</strong> &#8211; (<strong>CUDA API only</strong>) amount of dynamic local memory (in bytes)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Kernel.prepared_call">
+<tt class="descname">prepared_call</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Kernel.prepared_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the kernel.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.Kernel.__call__">
+<tt class="descname">__call__</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.Kernel.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shortcut for successive call to <a class="reference internal" href="#tigger.cluda.api.Kernel.prepare" title="tigger.cluda.api.Kernel.prepare"><tt class="xref py py-meth docutils literal"><span class="pre">prepare()</span></tt></a> and <a class="reference internal" href="#tigger.cluda.api.Kernel.prepared_call" title="tigger.cluda.api.Kernel.prepared_call"><tt class="xref py py-meth docutils literal"><span class="pre">prepared_call()</span></tt></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tigger.cluda.api.StaticKernel">
+<em class="property">class </em><tt class="descclassname">tigger.cluda.api.</tt><tt class="descname">StaticKernel</tt><a class="headerlink" href="#tigger.cluda.api.StaticKernel" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="tigger.cluda.api.StaticKernel.source">
+<tt class="descname">source</tt><a class="headerlink" href="#tigger.cluda.api.StaticKernel.source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains module source code.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.api.StaticKernel.__call__">
+<tt class="descname">__call__</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#tigger.cluda.api.StaticKernel.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the kernel.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="kernel-toolbox">
+<span id="cluda-kernel-toolbox"></span><h2>Kernel toolbox<a class="headerlink" href="#kernel-toolbox" title="Permalink to this headline">¶</a></h2>
+<p>The stuff available for the kernel passed for compilation consists of two parts.</p>
+<p>First, there are several objects available at the template rendering stage, namely <tt class="docutils literal"><span class="pre">numpy</span></tt>, <a class="reference internal" href="#module-tigger.cluda.dtypes" title="tigger.cluda.dtypes"><tt class="xref py py-mod docutils literal"><span class="pre">tigger.cluda.dtypes</span></tt></a> (as <tt class="docutils literal"><span class="pre">dtypes</span></tt>) and a <tt class="xref py py-class docutils literal"><span class="pre">FuncCollector</span></tt> instance named <tt class="docutils literal"><span class="pre">func</span></tt>, which is used to compensate for the lack of complex number operations in OpenCL, and the lack of C++ synthax which would allow one to write them.
+Its methods can be treated as if they return the name of the function necessary to operate on given dtypes.
+Available methods are:</p>
+<span class="target" id="module-tigger.cluda.kernel"></span><dl class="class">
+<dt id="tigger.cluda.kernel.FuncCollector">
+<em class="property">class </em><tt class="descclassname">tigger.cluda.kernel.</tt><tt class="descname">FuncCollector</tt><a class="headerlink" href="#tigger.cluda.kernel.FuncCollector" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="tigger.cluda.kernel.FuncCollector.mul">
+<tt class="descname">mul</tt><big>(</big><em>dtype1</em>, <em>dtype2</em>, <em>out=None</em><big>)</big><a class="headerlink" href="#tigger.cluda.kernel.FuncCollector.mul" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the function that multiplies values of types <tt class="docutils literal"><span class="pre">dtype1</span></tt> and <tt class="docutils literal"><span class="pre">dtype2</span></tt>.
+If <tt class="docutils literal"><span class="pre">out</span></tt> is given, it will be set as a return type for this function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.kernel.FuncCollector.div">
+<tt class="descname">div</tt><big>(</big><em>dtype1</em>, <em>dtype2</em>, <em>out=None</em><big>)</big><a class="headerlink" href="#tigger.cluda.kernel.FuncCollector.div" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the function that divides values of <tt class="docutils literal"><span class="pre">dtype1</span></tt> and <tt class="docutils literal"><span class="pre">dtype2</span></tt>.
+If <tt class="docutils literal"><span class="pre">out</span></tt> is given, it will be set as a return type for this function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.cluda.kernel.FuncCollector.cast">
+<tt class="descname">cast</tt><big>(</big><em>out_dtype</em>, <em>in_dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.kernel.FuncCollector.cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the function that casts values of <tt class="docutils literal"><span class="pre">in_dtype</span></tt> to <tt class="docutils literal"><span class="pre">out_dtype</span></tt>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p>Second, there is a set of macros attached to any kernel depending on the API it is being compiled for:</p>
+<dl class="macro">
+<dt id="LOCAL_BARRIER">
+<tt class="descname">LOCAL_BARRIER</tt><a class="headerlink" href="#LOCAL_BARRIER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synchronizes threads inside a block.</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="WITHIN_KERNEL">
+<tt class="descname">WITHIN_KERNEL</tt><a class="headerlink" href="#WITHIN_KERNEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifier for a device-only function declaration.</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="KERNEL">
+<tt class="descname">KERNEL</tt><a class="headerlink" href="#KERNEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifier for the kernel function declaration.</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="GLOBAL_MEM">
+<tt class="descname">GLOBAL_MEM</tt><a class="headerlink" href="#GLOBAL_MEM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifier for the global memory pointer argument.</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="LOCAL_MEM">
+<tt class="descname">LOCAL_MEM</tt><a class="headerlink" href="#LOCAL_MEM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifier for the statically allocated local memory variable.</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="LOCAL_MEM_DYNAMIC">
+<tt class="descname">LOCAL_MEM_DYNAMIC</tt><a class="headerlink" href="#LOCAL_MEM_DYNAMIC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifier for the dynamically allocated local memory variable.</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="LOCAL_MEM_ARG">
+<tt class="descname">LOCAL_MEM_ARG</tt><a class="headerlink" href="#LOCAL_MEM_ARG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifier for the local memory argument in the device-only functions.</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="INLINE">
+<tt class="descname">INLINE</tt><a class="headerlink" href="#INLINE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifier for inline functions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="get_local_id">
+int <tt class="descname">get_local_id</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#get_local_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="get_group_id">
+int <tt class="descname">get_group_id</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#get_group_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="get_global_id">
+int <tt class="descname">get_global_id</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#get_global_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="get_local_size">
+int <tt class="descname">get_local_size</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#get_local_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="get_num_groups">
+int <tt class="descname">get_num_groups</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#get_num_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="get_global_size">
+int <tt class="descname">get_global_size</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#get_global_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local, group and global identifiers and sizes.
+In case of CUDA mimic the behavior of corresponding OpenCL functions.</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="VIRTUAL_SKIP_THREADS">
+<tt class="descname">VIRTUAL_SKIP_THREADS</tt><a class="headerlink" href="#VIRTUAL_SKIP_THREADS" title="Permalink to this definition">¶</a></dt>
+<dd><p>This macro should start any kernel compiled with <a class="reference internal" href="#tigger.cluda.api.Context.compile_static" title="tigger.cluda.api.Context.compile_static"><tt class="xref py py-meth docutils literal"><span class="pre">compile_static()</span></tt></a>.
+It skips all the empty threads resulting from fitting call parameters into backend limitations.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="virtual_local_id">
+int <tt class="descname">virtual_local_id</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#virtual_local_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="virtual_group_id">
+int <tt class="descname">virtual_group_id</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#virtual_group_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="virtual_global_id">
+int <tt class="descname">virtual_global_id</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#virtual_global_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="virtual_local_size">
+int <tt class="descname">virtual_local_size</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#virtual_local_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="virtual_num_groups">
+int <tt class="descname">virtual_num_groups</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#virtual_num_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="virtual_global_size">
+int <tt class="descname">virtual_global_size</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#virtual_global_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only available in <a class="reference internal" href="#tigger.cluda.api.StaticKernel" title="tigger.cluda.api.StaticKernel"><tt class="xref py py-class docutils literal"><span class="pre">StaticKernel</span></tt></a> objects obtained from <a class="reference internal" href="#tigger.cluda.api.Context.compile_static" title="tigger.cluda.api.Context.compile_static"><tt class="xref py py-meth docutils literal"><span class="pre">compile_static()</span></tt></a>.
+Since its dimensions can differ from actual call dimensions, these functions have to be used.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="virtual_global_flat_id">
+int <tt class="descname">virtual_global_flat_id</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#virtual_global_flat_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="virtual_global_flat_size">
+int <tt class="descname">virtual_global_flat_size</tt><big>(</big>int<em>&nbsp;dim</em><big>)</big><a class="headerlink" href="#virtual_global_flat_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only available in <a class="reference internal" href="#tigger.cluda.api.StaticKernel" title="tigger.cluda.api.StaticKernel"><tt class="xref py py-class docutils literal"><span class="pre">StaticKernel</span></tt></a> objects obtained from <a class="reference internal" href="#tigger.cluda.api.Context.compile_static" title="tigger.cluda.api.Context.compile_static"><tt class="xref py py-meth docutils literal"><span class="pre">compile_static()</span></tt></a>.
+useful for addressing input and output arrays.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="datatype-tools">
+<h2>Datatype tools<a class="headerlink" href="#datatype-tools" title="Permalink to this headline">¶</a></h2>
+<p>This module contains various convenience functions which operate with <tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt> objects.</p>
+<span class="target" id="module-tigger.cluda.dtypes"></span><dl class="function">
+<dt id="tigger.cluda.dtypes.c_constant">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">c_constant</tt><big>(</big><em>val</em>, <em>dtype=None</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.c_constant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a C-style numerical constant.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.cast">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">cast</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns function that takes one argument and casts it to <tt class="docutils literal"><span class="pre">dtype</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.complex_ctr">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">complex_ctr</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.complex_ctr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns name of the constructor for the given <tt class="docutils literal"><span class="pre">dtype</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.complex_for">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">complex_for</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.complex_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns complex dtype corresponding to given floating point <tt class="docutils literal"><span class="pre">dtype</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.ctype">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">ctype</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.ctype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns C type name corresponding to given <tt class="docutils literal"><span class="pre">dtype</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.is_complex">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">is_complex</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.is_complex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if <tt class="docutils literal"><span class="pre">dtype</span></tt> is complex.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.is_double">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">is_double</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.is_double" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if <tt class="docutils literal"><span class="pre">dtype</span></tt> is double precision floating point.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.is_integer">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">is_integer</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.is_integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if <tt class="docutils literal"><span class="pre">dtype</span></tt> is an integer.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.min_scalar_type">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">min_scalar_type</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.min_scalar_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <tt class="xref py py-func docutils literal"><span class="pre">numpy.min_scalar_dtype()</span></tt>
+which takes into account types supported by GPUs.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.normalize_type">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">normalize_type</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.normalize_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for wrapping all dtypes coming from the user.
+<tt class="docutils literal"><span class="pre">numpy</span></tt> uses two different classes to represent dtypes,
+and one of them does not have some important attributes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.normalize_types">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">normalize_types</tt><big>(</big><em>dtypes</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.normalize_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as <a class="reference internal" href="#tigger.cluda.dtypes.normalize_type" title="tigger.cluda.dtypes.normalize_type"><tt class="xref py py-func docutils literal"><span class="pre">normalize_type()</span></tt></a>, but operates on a list of dtypes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.real_for">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">real_for</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.real_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns floating point dtype corresponding to given complex <tt class="docutils literal"><span class="pre">dtype</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.result_type">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">result_type</tt><big>(</big><em>*dtypes</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.result_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <tt class="xref py py-func docutils literal"><span class="pre">numpy.result_type()</span></tt>
+which takes into account types supported by GPUs.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tigger.cluda.dtypes.zero_ctr">
+<tt class="descclassname">tigger.cluda.dtypes.</tt><tt class="descname">zero_ctr</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.cluda.dtypes.zero_ctr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the string with constructed zero value for the given <tt class="docutils literal"><span class="pre">dtype</span></tt>.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CLUDA layer</a><ul>
+<li><a class="reference internal" href="#root-level-interface">Root level interface</a></li>
+<li><a class="reference internal" href="#api-module">API module</a></li>
+<li><a class="reference internal" href="#kernel-toolbox">Kernel toolbox</a></li>
+<li><a class="reference internal" href="#datatype-tools">Datatype tools</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="helpers.html"
+                        title="previous chapter">Helpers</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="core.html"
+                        title="next chapter">Core classes</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/cluda.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="Core classes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="helpers.html" title="Helpers"
+             >previous</a> |</li>
+        <li><a href="../index.html">tigger 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >API reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Bogdan Opanchuk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

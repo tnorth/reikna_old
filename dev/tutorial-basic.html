@@ -1,0 +1,239 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tutorial: basics &mdash; tigger 0.2.0dev-470e334 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.2.0dev-470e334',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tigger 0.2.0dev-470e334 documentation" href="index.html" />
+    <link rel="next" title="Tutorial: advanced topics" href="tutorial-advanced.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorial-advanced.html" title="Tutorial: advanced topics"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="introduction.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tutorial-basics">
+<span id="tutorial-basic"></span><h1>Tutorial: basics<a class="headerlink" href="#tutorial-basics" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="usage-of-computations">
+<h2>Usage of computations<a class="headerlink" href="#usage-of-computations" title="Permalink to this headline">¶</a></h2>
+<p>All <tt class="docutils literal"><span class="pre">Tigger</span></tt> computation classes are derived from the <a class="reference internal" href="api/core.html#tigger.core.Computation" title="tigger.core.Computation"><tt class="xref py py-class docutils literal"><span class="pre">Computation</span></tt></a> class and therefore share the same API and behavior.
+Each computation is parametrized by a dictionary called <strong>basis</strong> (which is hidden from the user), and, sometimes, by the names and positions of its arguments (when they can vary, for example, in <a class="reference internal" href="api/computations.html#tigger.elementwise.Elementwise" title="tigger.elementwise.Elementwise"><tt class="xref py py-class docutils literal"><span class="pre">Elementwise</span></tt></a>).</p>
+<p>Before use a computation has to be fully prepared by means of calling <a class="reference internal" href="api/core.html#tigger.core.Computation.prepare_for" title="tigger.core.Computation.prepare_for"><tt class="xref py py-meth docutils literal"><span class="pre">prepare_for()</span></tt></a>.
+This method derives the basis from a set of positional arguments and optional keyword arguments.
+The positional arguments should be either the same arrays and scalars you are going to pass to the computation call (which means the same shapes and data types), or their replacements in the form of <a class="reference internal" href="api/core.html#tigger.core.ArrayValue" title="tigger.core.ArrayValue"><tt class="xref py py-class docutils literal"><span class="pre">ArrayValue</span></tt></a> and <a class="reference internal" href="api/core.html#tigger.core.ScalarValue" title="tigger.core.ScalarValue"><tt class="xref py py-class docutils literal"><span class="pre">ScalarValue</span></tt></a> objects:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nb">input</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">allocate</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">allocate</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">tr</span> <span class="o">=</span> <span class="n">Transpose</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span><span class="o">.</span><span class="n">prepare_for</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span>
+<span class="n">tr</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Consequently, API of each computation class is fully defined by the documentation for its <tt class="docutils literal"><span class="pre">prepare_for</span></tt> method.
+In particular, <tt class="docutils literal"><span class="pre">__call__</span></tt> has the same positional arguments as <tt class="docutils literal"><span class="pre">prepare_for</span></tt>, and base computation argument names (used to attach transformations) are the names of these positional arguments.</p>
+</div>
+<div class="section" id="computations-and-transformations">
+<h2>Computations and transformations<a class="headerlink" href="#computations-and-transformations" title="Permalink to this headline">¶</a></h2>
+<p>One often needs to perform some simple processing of the input or output values of a computation.
+This can be scaling, splitting complex values into components, and so on.
+Some of these operations require additional memory to store intermediate results, and all of them involve additional overhead of calling the kernel, and passing values to and from the device memory.
+<tt class="docutils literal"><span class="pre">Tigger</span></tt> porvides an API to define such transformations and attach them to &#8220;core&#8221; computations, effectively compiling the transformation code into the main kernel, thus avoiding all these drawbacks.</p>
+</div>
+<div class="section" id="transformation-tree">
+<h2>Transformation tree<a class="headerlink" href="#transformation-tree" title="Permalink to this headline">¶</a></h2>
+<p>Before talking about transformations themselves, we need to take a closer look at the computation signatures.
+Positional arguments of any <tt class="docutils literal"><span class="pre">__call__</span></tt> method of a class derived from <a class="reference internal" href="api/core.html#tigger.core.Computation" title="tigger.core.Computation"><tt class="xref py py-meth docutils literal"><span class="pre">Computation()</span></tt></a> are output arrays, input arrays, and scalar arguments, in this order.
+All these values are eventually passed to the computation kernel.</p>
+<p>All the positional arguments have an identifier which is unique for the given computation object.
+Identifiers for the base computation (without any connected transformation) are, by convention, the names of the positional arguments to <tt class="docutils literal"><span class="pre">prepare_for</span></tt> for the computation.
+These identifiers serve as connection points, where the user can attach transformations.</p>
+<p>All attached transformations form a tree with roots being these base connection points, and leaves forming defining the positional arguments to <tt class="docutils literal"><span class="pre">prepare_for</span></tt> and <tt class="docutils literal"><span class="pre">__call__</span></tt> methods visible to the user.
+As an example, let us consider an elementwise computation object with one output, two inputs and a scalar parameter, which performs the calculation <tt class="docutils literal"><span class="pre">out</span> <span class="pre">=</span> <span class="pre">in1</span> <span class="pre">+</span> <span class="pre">in2</span> <span class="pre">+</span> <span class="pre">param</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">tigger.cluda</span> <span class="kn">as</span> <span class="nn">cluda</span>
+<span class="kn">from</span> <span class="nn">tigger.core</span> <span class="kn">import</span> <span class="n">Transformation</span>
+<span class="kn">from</span> <span class="nn">tigger.elementwise</span> <span class="kn">import</span> <span class="n">specialize_elementwise</span>
+<span class="kn">import</span> <span class="nn">tigger.transformations</span> <span class="kn">as</span> <span class="nn">transformations</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">cluda</span><span class="o">.</span><span class="n">ocl_api</span><span class="p">()</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Context</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="n">TestComputation</span> <span class="o">=</span> <span class="n">specialize_elementwise</span><span class="p">(</span>
+    <span class="s">&#39;out&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;in1&#39;</span><span class="p">,</span> <span class="s">&#39;in2&#39;</span><span class="p">],</span> <span class="s">&#39;param&#39;</span><span class="p">,</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s">&quot;${out.store}(${in1.load} + ${in2.load} + ${param};&quot;</span><span class="p">))</span>
+
+<span class="n">comp</span> <span class="o">=</span> <span class="n">TestComputation</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The details of creating the <tt class="docutils literal"><span class="pre">TestComputation</span></tt> class are not important for this example; they are provided here just for the sake of completeness.
+The initial transformation tree of <tt class="docutils literal"><span class="pre">comp</span></tt> object looks like:</p>
+<div class="highlight-python"><pre>   | out   | &gt;&gt;
+&gt;&gt; | in1   |
+&gt;&gt; | in2   |
+&gt;&gt; | param |</pre>
+</div>
+<p>Here <tt class="docutils literal"><span class="pre">||</span></tt> denote the base computation (the one defined by the developer), and <tt class="docutils literal"><span class="pre">&gt;&gt;</span></tt> denote inputs and outputs specified by the user.
+The computation signature is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">comp</span><span class="o">.</span><span class="n">signature_str</span><span class="p">()</span>
+<span class="go">&#39;(array) out, (array) in1, (array) in2, (scalar) param&#39;</span>
+</pre></div>
+</div>
+<p>Now let us attach the transformation to the output which will split it into two halves: <tt class="docutils literal"><span class="pre">out1</span> <span class="pre">=</span> <span class="pre">out</span> <span class="pre">/</span> <span class="pre">2</span></tt>, <tt class="docutils literal"><span class="pre">out2</span> <span class="pre">=</span> <span class="pre">out</span> <span class="pre">/</span> <span class="pre">2</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">comp</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">transformations</span><span class="o">.</span><span class="n">split_complex</span><span class="p">(),</span> <span class="s">&#39;out&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;out1&#39;</span><span class="p">,</span> <span class="s">&#39;out2&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>We have used the pre-created transformation here for simplicity; writing custom transformations is described in <a class="reference internal" href="tutorial-advanced.html#tutorial-advanced-transformation"><em>Writing a transformation</em></a>.</p>
+<p>In addition, we want <tt class="docutils literal"><span class="pre">in2</span></tt> to be scaled before being passed to the main computation.
+To achieve this, we connect the scaling transformation to it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">comp</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">transformations</span><span class="o">.</span><span class="n">scale_param</span><span class="p">(),</span> <span class="s">&#39;in2&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;in2_prime&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;param2&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The transformation tree now looks like:</p>
+<div class="highlight-python"><pre>                     | out   | ----&gt; out1 &gt;&gt;
+                     |       |   \-&gt; out2 &gt;&gt;
+                  &gt;&gt; | in1   |
+&gt;&gt; in2_prime ------&gt; | in2   |
+               /  &gt;&gt; | param |
+&gt;&gt; param2 ----/</pre>
+</div>
+<p>As can be seen, nothing has changed from the base computation&#8217;s point of view: it still gets the same inputs and outputs to the same array.
+But user-supplied parameters (<tt class="docutils literal"><span class="pre">&gt;&gt;</span></tt>) have changed, which can be also seen in the result of the <a class="reference internal" href="api/core.html#tigger.core.Computation.signature_str" title="tigger.core.Computation.signature_str"><tt class="xref py py-meth docutils literal"><span class="pre">signature_str()</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">comp</span><span class="o">.</span><span class="n">signature_str</span><span class="p">()</span>
+<span class="go">&#39;(array) out1, (array) out2, (array) in1, (array) in2_prime, (scalar) param, (scalar) param2&#39;</span>
+</pre></div>
+</div>
+<p>Notice that <tt class="docutils literal"><span class="pre">param2</span></tt> was moved to the end of the signature.
+This was done in order to keep outputs, inputs and scalar parameters grouped.
+Except for that, the order of the final signature is obtained by traversing the transformation tree depth-first.</p>
+<p>The resulting computation returns the value <tt class="docutils literal"><span class="pre">in1</span> <span class="pre">+</span> <span class="pre">(in2_prime</span> <span class="pre">*</span> <span class="pre">param2)</span> <span class="pre">+</span> <span class="pre">param</span></tt> split in half.
+In order to run it, we have to prepare it first.
+When <tt class="docutils literal"><span class="pre">prepare_for</span></tt> is called, the data types and shapes of the given arguments will be propagated to the roots and used to prepare the original computation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">comp</span><span class="o">.</span><span class="n">prepare_for</span><span class="p">(</span><span class="n">out1</span><span class="p">,</span> <span class="n">out2</span><span class="p">,</span> <span class="n">in1</span><span class="p">,</span> <span class="n">in2_prime</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">param2</span><span class="p">)</span>
+<span class="n">comp</span><span class="p">(</span><span class="n">out1</span><span class="p">,</span> <span class="n">out2</span><span class="p">,</span> <span class="n">in1</span><span class="p">,</span> <span class="n">in2_prime</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">param2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="transformation-restrictions">
+<h2>Transformation restrictions<a class="headerlink" href="#transformation-restrictions" title="Permalink to this headline">¶</a></h2>
+<p>There are some limitations of the transformation mechanics:</p>
+<ol class="arabic simple">
+<li>Transformations are strictly elementwise.
+It means that you cannot specify the index to read from or to write to in the transformation code &#8212; it stays the same as the one used to read the value in the main kernel.</li>
+<li>Transformations connected to the input nodes must have only one output, and transformations connected to the output nodes must have only one input.
+This restriction is, in fact, enforced by the signature of <a class="reference internal" href="api/core.html#tigger.core.Computation.connect" title="tigger.core.Computation.connect"><tt class="xref py py-meth docutils literal"><span class="pre">connect()</span></tt></a>.</li>
+<li>External endpoints of the output transformations cannot point to existing nodes in the transformation tree.
+This is the direct consequence of the strict elementwiseness &#8212; it would unavoidably create races between memory writes from different branches.
+On the other hand, input transformations can be safely connected to existing nodes, including base nodes.</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial: basics</a><ul>
+<li><a class="reference internal" href="#usage-of-computations">Usage of computations</a></li>
+<li><a class="reference internal" href="#computations-and-transformations">Computations and transformations</a></li>
+<li><a class="reference internal" href="#transformation-tree">Transformation tree</a></li>
+<li><a class="reference internal" href="#transformation-restrictions">Transformation restrictions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="introduction.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tutorial-advanced.html"
+                        title="next chapter">Tutorial: advanced topics</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/tutorial-basic.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorial-advanced.html" title="Tutorial: advanced topics"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="introduction.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Bogdan Opanchuk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

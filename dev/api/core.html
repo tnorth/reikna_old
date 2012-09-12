@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Core classes &mdash; tigger 0.2.0dev-470e334 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0dev-470e334',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="tigger 0.2.0dev-470e334 documentation" href="../index.html" />
+    <link rel="up" title="API reference" href="index.html" />
+    <link rel="next" title="Computations" href="computations.html" />
+    <link rel="prev" title="CLUDA layer" href="cluda.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="computations.html" title="Computations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cluda.html" title="CLUDA layer"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="core-classes">
+<h1>Core classes<a class="headerlink" href="#core-classes" title="Permalink to this headline">¶</a></h1>
+<p>Computations and transformations are based on two classes, which provide the user-side interface of computation objects.</p>
+<dl class="class">
+<dt id="tigger.core.Computation">
+<em class="property">class </em><tt class="descclassname">tigger.core.</tt><tt class="descname">Computation</tt><big>(</big><em>ctx</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#tigger.core.Computation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a computation class and performs basic initialization for the
+<a class="reference internal" href="cluda.html#tigger.cluda.api.Context" title="tigger.cluda.api.Context"><tt class="xref py py-class docutils literal"><span class="pre">Context</span></tt></a> object <tt class="docutils literal"><span class="pre">ctx</span></tt>.
+Note that the computation is unusable until <tt class="xref py py-func docutils literal"><span class="pre">prepare()</span></tt>
+or <tt class="xref py py-func docutils literal"><span class="pre">prepare_for()</span></tt> is called.
+If <tt class="docutils literal"><span class="pre">debug</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt>, a couple of additional checks will be performed in runtime
+during preparation and calls to computation.</p>
+<p>The following methods are for overriding by computations
+inheriting <tt class="xref py py-class docutils literal"><span class="pre">Computation</span></tt> class.</p>
+<span class="target" id="module-tigger.core"></span><dl class="method">
+<dt id="tigger.core.Computation._set_argnames">
+<tt class="descname">_set_argnames</tt><big>(</big><em>outputs</em>, <em>inputs</em>, <em>scalars</em><big>)</big><a class="headerlink" href="#tigger.core.Computation._set_argnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Special method to use by computations with variable number of arguments.
+Should be called before any connections and preparations are made.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.core.Computation._get_argnames">
+<tt class="descname">_get_argnames</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.core.Computation._get_argnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must return a tuple <tt class="docutils literal"><span class="pre">(outputs,</span> <span class="pre">inputs,</span> <span class="pre">scalars)</span></tt>, where each of
+<tt class="docutils literal"><span class="pre">outputs</span></tt>, <tt class="docutils literal"><span class="pre">inputs</span></tt>, <tt class="docutils literal"><span class="pre">scalars</span></tt> is a tuple of argument names used by this computation.
+If this method is not overridden, <tt class="xref py py-meth docutils literal"><span class="pre">set_argnames()</span></tt> will have to be called
+right after creating the computation object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.core.Computation._get_argvalues">
+<tt class="descname">_get_argvalues</tt><big>(</big><em>argnames</em>, <em>basis</em><big>)</big><a class="headerlink" href="#tigger.core.Computation._get_argvalues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must return a dictionary with <a class="reference internal" href="#tigger.core.ArrayValue" title="tigger.core.ArrayValue"><tt class="xref py py-class docutils literal"><span class="pre">ArrayValue</span></tt></a> and
+<a class="reference internal" href="#tigger.core.ScalarValue" title="tigger.core.ScalarValue"><tt class="xref py py-class docutils literal"><span class="pre">ScalarValue</span></tt></a> objects assigned to the argument names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.core.Computation._get_basis_for">
+<tt class="descname">_get_basis_for</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="headerlink" href="#tigger.core.Computation._get_basis_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must return a dictionary with basis values for the computation working with <tt class="docutils literal"><span class="pre">args</span></tt>,
+given optional parameters <tt class="docutils literal"><span class="pre">kwds</span></tt>.
+If names of positional and keyword arguments are known in advance,
+it is better to use them explicitly in the signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.core.Computation._construct_operations">
+<tt class="descname">_construct_operations</tt><big>(</big><em>operations</em>, <em>basis</em>, <em>device_params</em><big>)</big><a class="headerlink" href="#tigger.core.Computation._construct_operations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must fill the <tt class="docutils literal"><span class="pre">operations</span></tt> object with actions required to execute the computation.
+See the <a class="reference internal" href="#tigger.core.operation.OperationRecorder" title="tigger.core.operation.OperationRecorder"><tt class="xref py py-class docutils literal"><span class="pre">OperationRecorder</span></tt></a> class reference
+for the list of available actions.</p>
+</dd></dl>
+
+<p>The rest is public methods.</p>
+<dl class="method">
+<dt id="tigger.core.Computation.connect">
+<tt class="descname">connect</tt><big>(</big><em>tr</em>, <em>array_arg</em>, <em>new_array_args</em>, <em>new_scalar_args=None</em><big>)</big><a class="headerlink" href="#tigger.core.Computation.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects a <a class="reference internal" href="#tigger.core.Transformation" title="tigger.core.Transformation"><tt class="xref py py-class docutils literal"><span class="pre">Transformation</span></tt></a> instance to the computation.
+After the successful connection the computation resets to teh unprepared state.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>array_arg</strong> &#8211; name of the leaf computation parameter to connect to.</li>
+<li><strong>new_array_args</strong> &#8211; list of the names for the new leaf array parameters.</li>
+<li><strong>new_scalar_args</strong> &#8211; list of the names for the new leaf scalar parameters.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.core.Computation.get_nested_computation">
+<tt class="descname">get_nested_computation</tt><big>(</big><em>cls</em><big>)</big><a class="headerlink" href="#tigger.core.Computation.get_nested_computation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls <tt class="docutils literal"><span class="pre">cls</span></tt> constructor with the same arguments and keywords
+as were given to its own constructor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.core.Computation.prepare_for">
+<tt class="descname">prepare_for</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="headerlink" href="#tigger.core.Computation.prepare_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the computation so that it could run with <tt class="docutils literal"><span class="pre">args</span></tt> supplied to <tt class="xref py py-meth docutils literal"><span class="pre">__call__()</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.core.Computation.signature_str">
+<tt class="descname">signature_str</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.core.Computation.signature_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a string with the signature of the computation,
+containing argument names, types and shapes (in case of arrays).</p>
+<p>This is primarily a debug method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tigger.core.Transformation">
+<em class="property">class </em><tt class="descclassname">tigger.core.</tt><tt class="descname">Transformation</tt><big>(</big><em>inputs=1</em>, <em>outputs=1</em>, <em>scalars=0</em>, <em>derive_o_from_is=None</em>, <em>derive_i_from_os=None</em>, <em>code='${o1.store}(${i1.load});'</em><big>)</big><a class="headerlink" href="#tigger.core.Transformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines an elementwise transformation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>inputs</strong> &#8211; number of input array values.</li>
+<li><strong>outputs</strong> &#8211; number of output array values.</li>
+<li><strong>parameters</strong> &#8211; number of scalar parameters for the transformation.</li>
+<li><strong>derive_o_from_is</strong> &#8211; a function taking <tt class="docutils literal"><span class="pre">inputs</span></tt> + <tt class="docutils literal"><span class="pre">scalars</span></tt> dtype parameters
+and returning the output dtype.
+If <tt class="docutils literal"><span class="pre">None</span></tt>, <a class="reference internal" href="cluda.html#tigger.cluda.dtypes.result_type" title="tigger.cluda.dtypes.result_type"><tt class="xref py py-func docutils literal"><span class="pre">result_type()</span></tt></a> is used.
+Called when the transformation is connected to the input argument.</li>
+<li><strong>derive_i_from_os</strong> &#8211; a function taking <tt class="docutils literal"><span class="pre">outputs</span></tt> + <tt class="docutils literal"><span class="pre">scalars</span></tt> dtype parameters
+and returning the input dtype.
+If <tt class="docutils literal"><span class="pre">None</span></tt>, <a class="reference internal" href="cluda.html#tigger.cluda.dtypes.result_type" title="tigger.cluda.dtypes.result_type"><tt class="xref py py-func docutils literal"><span class="pre">result_type()</span></tt></a> is used.
+Called when the transformation is connected to the output argument.</li>
+<li><strong>code</strong> &#8211; template source with the transformation code.
+See <a class="reference internal" href="../tutorial-advanced.html#tutorial-advanced-transformation"><em>Writing a transformation</em></a> section for details.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="tigger.core.operation.OperationRecorder">
+<em class="property">class </em><tt class="descclassname">tigger.core.operation.</tt><tt class="descname">OperationRecorder</tt><big>(</big><em>ctx</em>, <em>basis</em>, <em>base_values</em><big>)</big><a class="headerlink" href="#tigger.core.operation.OperationRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="tigger.core.operation.OperationRecorder.add_allocation">
+<tt class="descname">add_allocation</tt><big>(</big><em>name</em>, <em>shape</em>, <em>dtype</em><big>)</big><a class="headerlink" href="#tigger.core.operation.OperationRecorder.add_allocation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an allocation to the list of actions.
+The <tt class="docutils literal"><span class="pre">name</span></tt> can be used later in the list of argument names for kernels.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.core.operation.OperationRecorder.add_computation">
+<tt class="descname">add_computation</tt><big>(</big><em>cls</em>, <em>*argnames</em>, <em>**kwds</em><big>)</big><a class="headerlink" href="#tigger.core.operation.OperationRecorder.add_computation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a nested computation call. The <tt class="docutils literal"><span class="pre">computation</span></tt> value must be a computation
+with necessary basis set and transformations connected.
+<tt class="docutils literal"><span class="pre">argnames</span></tt> list specifies which positional arguments will be passed to this kernel.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tigger.core.operation.OperationRecorder.add_kernel">
+<tt class="descname">add_kernel</tt><big>(</big><em>template</em>, <em>defname</em>, <em>argnames</em>, <em>global_size</em>, <em>local_size=None</em>, <em>render_kwds=None</em><big>)</big><a class="headerlink" href="#tigger.core.operation.OperationRecorder.add_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds kernel execution to the list of actions.
+See <a class="reference internal" href="../tutorial-advanced.html#tutorial-advanced-computation"><em>Writing a computation</em></a> for details on how to write kernels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>template</strong> &#8211; Mako template for the kernel.</li>
+<li><strong>defname</strong> &#8211; name of the definition inside the template.</li>
+<li><strong>argnames</strong> &#8211; names of the arguments the kernel takes.
+These must either belong to the list of external argument names,
+or be allocated by <tt class="xref py py-meth docutils literal"><span class="pre">add_allocation()</span></tt> earlier.</li>
+<li><strong>global_size</strong> &#8211; global size to use for the call.</li>
+<li><strong>local_size</strong> &#8211; local size to use for the call.
+If <tt class="docutils literal"><span class="pre">None</span></tt>, the local size will be picked automatically.</li>
+<li><strong>render_kwds</strong> &#8211; dictionary with additional values used to render the template.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tigger.core.ArrayValue">
+<em class="property">class </em><tt class="descclassname">tigger.core.</tt><tt class="descname">ArrayValue</tt><big>(</big><em>shape</em>, <em>dtype</em><big>)</big><a class="headerlink" href="#tigger.core.ArrayValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stub object for array arguments.</p>
+<dl class="attribute">
+<dt id="tigger.core.ArrayValue.shape">
+<tt class="descname">shape</tt><a class="headerlink" href="#tigger.core.ArrayValue.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tuple specifying the shape of the array.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tigger.core.ArrayValue.dtype">
+<tt class="descname">dtype</tt><a class="headerlink" href="#tigger.core.ArrayValue.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt> object specifying the data type of the array.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tigger.core.ScalarValue">
+<em class="property">class </em><tt class="descclassname">tigger.core.</tt><tt class="descname">ScalarValue</tt><big>(</big><em>dtype</em><big>)</big><a class="headerlink" href="#tigger.core.ScalarValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stub object for scalar arguments.</p>
+<dl class="attribute">
+<dt id="tigger.core.ScalarValue.dtype">
+<tt class="descname">dtype</tt><a class="headerlink" href="#tigger.core.ScalarValue.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt> object specifying the data type of the scalar.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cluda.html"
+                        title="previous chapter">CLUDA layer</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="computations.html"
+                        title="next chapter">Computations</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/core.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="computations.html" title="Computations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cluda.html" title="CLUDA layer"
+             >previous</a> |</li>
+        <li><a href="../index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li>
+          <li><a href="index.html" >API reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Bogdan Opanchuk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
