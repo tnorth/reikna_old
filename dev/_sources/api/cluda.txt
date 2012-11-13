@@ -187,6 +187,14 @@ It is referred here (and references from other parts of this documentation) as :
 
         Number of local (shared in CUDA) memory banks is a number of successive 32-bit words you can access without getting bank conflicts.
 
+    .. py:attribute:: local_mem_size
+
+        Size of the local (shared in CUDA) memory per workgroup, in bytes.
+
+    .. py:attribute:: min_mem_coalesce_width
+
+        Dictionary ``{word_size:elements}``, where ``elements`` is the number of elements with size ``word_size`` in global memory that allow coalesced access.
+
 .. py:class:: Module
 
     .. py:attribute:: source
@@ -260,6 +268,14 @@ Available methods are:
         Returns the name of the function that casts values of ``in_dtype`` to ``out_dtype``.
 
 Second, there is a set of macros attached to any kernel depending on the API it is being compiled for:
+
+.. c:macro:: CUDA
+
+    If defined, specifies that the kernel is being compiled for CUDA API.
+
+.. c:macro:: CTX_FAST_MATH
+
+    If defined, specifies that the context for which the kernel is being compiled was created with the key ``fast_math``.
 
 .. c:macro:: LOCAL_BARRIER
 

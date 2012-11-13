@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>CLUDA layer &mdash; tigger 0.2.0dev-470e334 documentation</title>
+    <title>CLUDA layer &mdash; tigger 0.2.0dev-6fe54a6 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.0dev-470e334',
+        VERSION:     '0.2.0dev-6fe54a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="tigger 0.2.0dev-470e334 documentation" href="../index.html" />
+    <link rel="top" title="tigger 0.2.0dev-6fe54a6 documentation" href="../index.html" />
     <link rel="up" title="API reference" href="index.html" />
     <link rel="next" title="Core classes" href="core.html" />
     <link rel="prev" title="Helpers" href="helpers.html" /> 
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="helpers.html" title="Helpers"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li>
+        <li><a href="../index.html">tigger 0.2.0dev-6fe54a6 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">API reference</a> &raquo;</li> 
       </ul>
     </div>  
@@ -387,6 +387,18 @@ Synchronizes the context.</p>
 <dd><p>Number of local (shared in CUDA) memory banks is a number of successive 32-bit words you can access without getting bank conflicts.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="tigger.cluda.api.DeviceParameters.local_mem_size">
+<tt class="descname">local_mem_size</tt><a class="headerlink" href="#tigger.cluda.api.DeviceParameters.local_mem_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of the local (shared in CUDA) memory per workgroup, in bytes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tigger.cluda.api.DeviceParameters.min_mem_coalesce_width">
+<tt class="descname">min_mem_coalesce_width</tt><a class="headerlink" href="#tigger.cluda.api.DeviceParameters.min_mem_coalesce_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary <tt class="docutils literal"><span class="pre">{word_size:elements}</span></tt>, where <tt class="docutils literal"><span class="pre">elements</span></tt> is the number of elements with size <tt class="docutils literal"><span class="pre">word_size</span></tt> in global memory that allow coalesced access.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -496,6 +508,18 @@ If <tt class="docutils literal"><span class="pre">out</span></tt> is given, it w
 </dd></dl>
 
 <p>Second, there is a set of macros attached to any kernel depending on the API it is being compiled for:</p>
+<dl class="macro">
+<dt id="CUDA">
+<tt class="descname">CUDA</tt><a class="headerlink" href="#CUDA" title="Permalink to this definition">¶</a></dt>
+<dd><p>If defined, specifies that the kernel is being compiled for CUDA API.</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="CTX_FAST_MATH">
+<tt class="descname">CTX_FAST_MATH</tt><a class="headerlink" href="#CTX_FAST_MATH" title="Permalink to this definition">¶</a></dt>
+<dd><p>If defined, specifies that the context for which the kernel is being compiled was created with the key <tt class="docutils literal"><span class="pre">fast_math</span></tt>.</p>
+</dd></dl>
+
 <dl class="macro">
 <dt id="LOCAL_BARRIER">
 <tt class="descname">LOCAL_BARRIER</tt><a class="headerlink" href="#LOCAL_BARRIER" title="Permalink to this definition">¶</a></dt>
@@ -782,7 +806,7 @@ which takes into account types supported by GPUs.</p>
         <li class="right" >
           <a href="helpers.html" title="Helpers"
              >previous</a> |</li>
-        <li><a href="../index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li>
+        <li><a href="../index.html">tigger 0.2.0dev-6fe54a6 documentation</a> &raquo;</li>
           <li><a href="index.html" >API reference</a> &raquo;</li> 
       </ul>
     </div>

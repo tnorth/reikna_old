@@ -3,6 +3,12 @@ Release history
 ***************
 
 
+0.2.0 (current development version)
+===================================
+
+* Added FFT computation
+* Added Python 3 compatibility
+
 0.1.0 (12 Sep 2012)
 ===================
 

@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tutorial: advanced topics &mdash; tigger 0.2.0dev-470e334 documentation</title>
+    <title>Tutorial: advanced topics &mdash; tigger 0.2.0dev-6fe54a6 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.2.0dev-470e334',
+        VERSION:     '0.2.0dev-6fe54a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="tigger 0.2.0dev-470e334 documentation" href="index.html" />
+    <link rel="top" title="tigger 0.2.0dev-6fe54a6 documentation" href="index.html" />
     <link rel="next" title="API reference" href="api/index.html" />
     <link rel="prev" title="Tutorial: basics" href="tutorial-basic.html" /> 
   </head>
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="tutorial-basic.html" title="Tutorial: basics"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li> 
+        <li><a href="index.html">tigger 0.2.0dev-6fe54a6 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -153,9 +153,11 @@ This method is used in some internal algorithms.</p>
 </li>
 <li><p class="first">The last method actually specifies the actions to be done by the computation.
 These include kernel calls, allocations and calls to nested computations.
-The method takes three parameters: <tt class="docutils literal"><span class="pre">operations</span></tt> is a <a class="reference internal" href="api/core.html#tigger.core.operation.OperationRecorder" title="tigger.core.operation.OperationRecorder"><tt class="xref py py-class docutils literal"><span class="pre">OperationRecorder</span></tt></a> object, <tt class="docutils literal"><span class="pre">basis</span></tt> is a basis created by <a class="reference internal" href="api/core.html#tigger.core.Computation._get_basis_for" title="tigger.core.Computation._get_basis_for"><tt class="xref py py-meth docutils literal"><span class="pre">_get_basis_for()</span></tt></a>, and <tt class="docutils literal"><span class="pre">device_params</span></tt> is a <a class="reference internal" href="api/cluda.html#tigger.cluda.api.DeviceParameters" title="tigger.cluda.api.DeviceParameters"><tt class="xref py py-class docutils literal"><span class="pre">DeviceParameters</span></tt></a> object, which is used to optimize the computation for the specific device.</p>
+The method takes two parameters: <tt class="docutils literal"><span class="pre">basis</span></tt> is a basis created by <a class="reference internal" href="api/core.html#tigger.core.Computation._get_basis_for" title="tigger.core.Computation._get_basis_for"><tt class="xref py py-meth docutils literal"><span class="pre">_get_basis_for()</span></tt></a>, and <tt class="docutils literal"><span class="pre">device_params</span></tt> is a <a class="reference internal" href="api/cluda.html#tigger.cluda.api.DeviceParameters" title="tigger.cluda.api.DeviceParameters"><tt class="xref py py-class docutils literal"><span class="pre">DeviceParameters</span></tt></a> object, which is used to optimize the computation for the specific device.
+It must return a filled <a class="reference internal" href="api/core.html#tigger.core.operation.OperationRecorder" title="tigger.core.operation.OperationRecorder"><tt class="xref py py-class docutils literal"><span class="pre">OperationRecorder</span></tt></a> object.</p>
 <p>For our example we only need one action, which is the execution of an elementwise kernel:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">_construct_operations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operations</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">device_params</span><span class="p">):</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">_construct_operations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">device_params</span><span class="p">):</span>
+    <span class="n">operations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_operation_recorder</span><span class="p">()</span>
     <span class="n">template</span> <span class="o">=</span> <span class="n">template_from</span><span class="p">(</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &lt;%def name=&#39;testcomp(k_output, k_input1, k_input2, k_param)&#39;&gt;</span>
@@ -173,6 +175,7 @@ The method takes three parameters: <tt class="docutils literal"><span class="pre
 
     <span class="n">operations</span><span class="o">.</span><span class="n">add_kernel</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="s">&#39;testcomp&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;output&#39;</span><span class="p">,</span> <span class="s">&#39;input1&#39;</span><span class="p">,</span> <span class="s">&#39;input2&#39;</span><span class="p">,</span> <span class="s">&#39;param&#39;</span><span class="p">],</span>
         <span class="n">global_size</span><span class="o">=</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">size</span><span class="p">,),</span> <span class="n">render_kwds</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">operations</span>
 </pre></div>
 </div>
 <p>Every kernel call is based on the separate <tt class="docutils literal"><span class="pre">Mako</span></tt> template function.
@@ -250,7 +253,7 @@ Also, they must have <a class="reference internal" href="api/cluda.html#VIRTUAL_
         <li class="right" >
           <a href="tutorial-basic.html" title="Tutorial: basics"
              >previous</a> |</li>
-        <li><a href="index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li> 
+        <li><a href="index.html">tigger 0.2.0dev-6fe54a6 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

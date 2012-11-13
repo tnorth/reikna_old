@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Core classes &mdash; tigger 0.2.0dev-470e334 documentation</title>
+    <title>Core classes &mdash; tigger 0.2.0dev-6fe54a6 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.0dev-470e334',
+        VERSION:     '0.2.0dev-6fe54a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="tigger 0.2.0dev-470e334 documentation" href="../index.html" />
+    <link rel="top" title="tigger 0.2.0dev-6fe54a6 documentation" href="../index.html" />
     <link rel="up" title="API reference" href="index.html" />
     <link rel="next" title="Computations" href="computations.html" />
     <link rel="prev" title="CLUDA layer" href="cluda.html" /> 
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="cluda.html" title="CLUDA layer"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li>
+        <li><a href="../index.html">tigger 0.2.0dev-6fe54a6 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">API reference</a> &raquo;</li> 
       </ul>
     </div>  
@@ -78,6 +78,13 @@ Should be called before any connections and preparations are made.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="tigger.core.Computation._get_operation_recorder">
+<tt class="descname">_get_operation_recorder</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.core.Computation._get_operation_recorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an instance of <a class="reference internal" href="#tigger.core.operation.OperationRecorder" title="tigger.core.operation.OperationRecorder"><tt class="xref py py-class docutils literal"><span class="pre">OperationRecorder</span></tt></a> class
+which is used in <a class="reference internal" href="#tigger.core.Computation._construct_operations" title="tigger.core.Computation._construct_operations"><tt class="xref py py-meth docutils literal"><span class="pre">_construct_operations()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tigger.core.Computation._get_argnames">
 <tt class="descname">_get_argnames</tt><big>(</big><big>)</big><a class="headerlink" href="#tigger.core.Computation._get_argnames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Must return a tuple <tt class="docutils literal"><span class="pre">(outputs,</span> <span class="pre">inputs,</span> <span class="pre">scalars)</span></tt>, where each of
@@ -104,8 +111,9 @@ it is better to use them explicitly in the signature.</p>
 
 <dl class="method">
 <dt id="tigger.core.Computation._construct_operations">
-<tt class="descname">_construct_operations</tt><big>(</big><em>operations</em>, <em>basis</em>, <em>device_params</em><big>)</big><a class="headerlink" href="#tigger.core.Computation._construct_operations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Must fill the <tt class="docutils literal"><span class="pre">operations</span></tt> object with actions required to execute the computation.
+<tt class="descname">_construct_operations</tt><big>(</big><em>basis</em>, <em>device_params</em><big>)</big><a class="headerlink" href="#tigger.core.Computation._construct_operations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must fill and return the <a class="reference internal" href="#tigger.core.operation.OperationRecorder" title="tigger.core.operation.OperationRecorder"><tt class="xref py py-class docutils literal"><span class="pre">OperationRecorder</span></tt></a>
+object with actions required to execute the computation.
 See the <a class="reference internal" href="#tigger.core.operation.OperationRecorder" title="tigger.core.operation.OperationRecorder"><tt class="xref py py-class docutils literal"><span class="pre">OperationRecorder</span></tt></a> class reference
 for the list of available actions.</p>
 </dd></dl>
@@ -185,12 +193,12 @@ See <a class="reference internal" href="../tutorial-advanced.html#tutorial-advan
 
 <dl class="class">
 <dt id="tigger.core.operation.OperationRecorder">
-<em class="property">class </em><tt class="descclassname">tigger.core.operation.</tt><tt class="descname">OperationRecorder</tt><big>(</big><em>ctx</em>, <em>basis</em>, <em>base_values</em><big>)</big><a class="headerlink" href="#tigger.core.operation.OperationRecorder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">tigger.core.operation.</tt><tt class="descname">OperationRecorder</tt><big>(</big><em>ctx</em>, <em>tr_tree</em>, <em>basis</em>, <em>base_values</em><big>)</big><a class="headerlink" href="#tigger.core.operation.OperationRecorder" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="tigger.core.operation.OperationRecorder.add_allocation">
-<tt class="descname">add_allocation</tt><big>(</big><em>name</em>, <em>shape</em>, <em>dtype</em><big>)</big><a class="headerlink" href="#tigger.core.operation.OperationRecorder.add_allocation" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add_allocation</tt><big>(</big><em>shape</em>, <em>dtype</em><big>)</big><a class="headerlink" href="#tigger.core.operation.OperationRecorder.add_allocation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an allocation to the list of actions.
-The <tt class="docutils literal"><span class="pre">name</span></tt> can be used later in the list of argument names for kernels.</p>
+Returns the string which can be used later in the list of argument names for kernels.</p>
 </dd></dl>
 
 <dl class="method">
@@ -203,7 +211,7 @@ with necessary basis set and transformations connected.
 
 <dl class="method">
 <dt id="tigger.core.operation.OperationRecorder.add_kernel">
-<tt class="descname">add_kernel</tt><big>(</big><em>template</em>, <em>defname</em>, <em>argnames</em>, <em>global_size</em>, <em>local_size=None</em>, <em>render_kwds=None</em><big>)</big><a class="headerlink" href="#tigger.core.operation.OperationRecorder.add_kernel" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add_kernel</tt><big>(</big><em>template</em>, <em>defname</em>, <em>argnames</em>, <em>global_size</em>, <em>local_size=None</em>, <em>render_kwds=None</em>, <em>inplace=None</em><big>)</big><a class="headerlink" href="#tigger.core.operation.OperationRecorder.add_kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds kernel execution to the list of actions.
 See <a class="reference internal" href="../tutorial-advanced.html#tutorial-advanced-computation"><em>Writing a computation</em></a> for details on how to write kernels.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -220,6 +228,9 @@ or be allocated by <tt class="xref py py-meth docutils literal"><span class="pre
 <li><strong>local_size</strong> &#8211; local size to use for the call.
 If <tt class="docutils literal"><span class="pre">None</span></tt>, the local size will be picked automatically.</li>
 <li><strong>render_kwds</strong> &#8211; dictionary with additional values used to render the template.</li>
+<li><strong>inplace</strong> &#8211; list of pairs (output, input) specifying which memory can be
+safely overwritten inside kernel
+(and therefore can point to the same physical location).</li>
 </ul>
 </td>
 </tr>
@@ -310,7 +321,7 @@ If <tt class="docutils literal"><span class="pre">None</span></tt>, the local si
         <li class="right" >
           <a href="cluda.html" title="CLUDA layer"
              >previous</a> |</li>
-        <li><a href="../index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li>
+        <li><a href="../index.html">tigger 0.2.0dev-6fe54a6 documentation</a> &raquo;</li>
           <li><a href="index.html" >API reference</a> &raquo;</li> 
       </ul>
     </div>

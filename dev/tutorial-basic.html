@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tutorial: basics &mdash; tigger 0.2.0dev-470e334 documentation</title>
+    <title>Tutorial: basics &mdash; tigger 0.2.0dev-6fe54a6 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.2.0dev-470e334',
+        VERSION:     '0.2.0dev-6fe54a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="tigger 0.2.0dev-470e334 documentation" href="index.html" />
+    <link rel="top" title="tigger 0.2.0dev-6fe54a6 documentation" href="index.html" />
     <link rel="next" title="Tutorial: advanced topics" href="tutorial-advanced.html" />
     <link rel="prev" title="Introduction" href="introduction.html" /> 
   </head>
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="introduction.html" title="Introduction"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li> 
+        <li><a href="index.html">tigger 0.2.0dev-6fe54a6 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -100,7 +100,7 @@ As an example, let us consider an elementwise computation object with one output
 
 <span class="n">TestComputation</span> <span class="o">=</span> <span class="n">specialize_elementwise</span><span class="p">(</span>
     <span class="s">&#39;out&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;in1&#39;</span><span class="p">,</span> <span class="s">&#39;in2&#39;</span><span class="p">],</span> <span class="s">&#39;param&#39;</span><span class="p">,</span>
-    <span class="nb">dict</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s">&quot;${out.store}(${in1.load} + ${in2.load} + ${param};&quot;</span><span class="p">))</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s">&quot;${out.store}(idx, ${in1.load}(idx) + ${in2.load}(idx) + ${param});&quot;</span><span class="p">))</span>
 
 <span class="n">comp</span> <span class="o">=</span> <span class="n">TestComputation</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
 </pre></div>
@@ -148,7 +148,14 @@ Except for that, the order of the final signature is obtained by traversing the 
 <p>The resulting computation returns the value <tt class="docutils literal"><span class="pre">in1</span> <span class="pre">+</span> <span class="pre">(in2_prime</span> <span class="pre">*</span> <span class="pre">param2)</span> <span class="pre">+</span> <span class="pre">param</span></tt> split in half.
 In order to run it, we have to prepare it first.
 When <tt class="docutils literal"><span class="pre">prepare_for</span></tt> is called, the data types and shapes of the given arguments will be propagated to the roots and used to prepare the original computation.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">comp</span><span class="o">.</span><span class="n">prepare_for</span><span class="p">(</span><span class="n">out1</span><span class="p">,</span> <span class="n">out2</span><span class="p">,</span> <span class="n">in1</span><span class="p">,</span> <span class="n">in2_prime</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">param2</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">N</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">out1</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">out2</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">in1</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+<span class="n">in2_prime</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+<span class="n">param</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">param2</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">comp</span><span class="o">.</span><span class="n">prepare_for</span><span class="p">(</span><span class="n">out1</span><span class="p">,</span> <span class="n">out2</span><span class="p">,</span> <span class="n">in1</span><span class="p">,</span> <span class="n">in2_prime</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">param2</span><span class="p">)</span>
 <span class="n">comp</span><span class="p">(</span><span class="n">out1</span><span class="p">,</span> <span class="n">out2</span><span class="p">,</span> <span class="n">in1</span><span class="p">,</span> <span class="n">in2_prime</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">param2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -228,7 +235,7 @@ On the other hand, input transformations can be safely connected to existing nod
         <li class="right" >
           <a href="introduction.html" title="Introduction"
              >previous</a> |</li>
-        <li><a href="index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li> 
+        <li><a href="index.html">tigger 0.2.0dev-6fe54a6 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

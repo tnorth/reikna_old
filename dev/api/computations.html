@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Computations &mdash; tigger 0.2.0dev-470e334 documentation</title>
+    <title>Computations &mdash; tigger 0.2.0dev-6fe54a6 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.0dev-470e334',
+        VERSION:     '0.2.0dev-6fe54a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="tigger 0.2.0dev-470e334 documentation" href="../index.html" />
+    <link rel="top" title="tigger 0.2.0dev-6fe54a6 documentation" href="../index.html" />
     <link rel="up" title="API reference" href="index.html" />
     <link rel="next" title="Transformations" href="transformations.html" />
     <link rel="prev" title="Core classes" href="core.html" /> 
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="core.html" title="Core classes"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li>
+        <li><a href="../index.html">tigger 0.2.0dev-6fe54a6 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">API reference</a> &raquo;</li> 
       </ul>
     </div>  
@@ -189,6 +189,41 @@ If <tt class="docutils literal"><span class="pre">None</span></tt>, the whole ar
 
 </dd></dl>
 
+<dl class="class">
+<dt id="tigger.fft.FFT">
+<em class="property">class </em><tt class="descclassname">tigger.fft.</tt><tt class="descname">FFT</tt><big>(</big><em>ctx</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#tigger.fft.FFT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs the Fast Fourier Transform.
+The interface is similar to <tt class="xref py py-class docutils literal"><span class="pre">numpy.fft.fftn</span></tt>.
+The inverse transform is normalized so that <tt class="docutils literal"><span class="pre">IFFT(FFT(X))</span> <span class="pre">=</span> <span class="pre">X</span></tt>.</p>
+<dl class="method">
+<dt id="tigger.fft.FFT.prepare_for">
+<tt class="descname">prepare_for</tt><big>(</big><em>output</em>, <em>input</em>, <em>direction</em>, <em>axes=None</em><big>)</big><a class="headerlink" href="#tigger.fft.FFT.prepare_for" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>output</strong> &#8211; output array.</li>
+<li><strong>input</strong> &#8211; input array (with the same size as <tt class="docutils literal"><span class="pre">output</span></tt>).</li>
+<li><strong>direction</strong> &#8211; <tt class="docutils literal"><span class="pre">-1</span></tt> for forward transform, <tt class="docutils literal"><span class="pre">1</span></tt> for inverse transform.</li>
+<li><strong>axes</strong> &#8211; a tuple with axes over which to perform the transform.
+If not given, the transform is performed over all the axes.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Current algorithm works most effectively with array dimensions being power of 2
+This mostly applies to the axes over which the transform is performed,
+beacuse otherwise the computation falls back to the Bluestein&#8217;s algorithm,
+which effectively halves the performance.</p>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -240,7 +275,7 @@ If <tt class="docutils literal"><span class="pre">None</span></tt>, the whole ar
         <li class="right" >
           <a href="core.html" title="Core classes"
              >previous</a> |</li>
-        <li><a href="../index.html">tigger 0.2.0dev-470e334 documentation</a> &raquo;</li>
+        <li><a href="../index.html">tigger 0.2.0dev-6fe54a6 documentation</a> &raquo;</li>
           <li><a href="index.html" >API reference</a> &raquo;</li> 
       </ul>
     </div>
