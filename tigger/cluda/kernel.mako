@@ -111,6 +111,17 @@
 %endfor
 %endif
 
+
+%for nn,tp in {'cfloat':['float2', 'float'], 'cdouble':['double2', 'double']}.iteritems():
+    WITHIN_KERNEL ${tp[0]} ${nn}_exp(${tp[0]} (a))
+    {
+         ${tp[1]} expr = exp(a.x);
+         ${tp[1]} cosi; 
+         ${tp[1]} sini = sincos(a.y, &cosi);
+         return COMPLEX_CTR(${tp[0]}) (expr * cosi, expr * sini);
+    }
+%endfor
+
 </%def>
 
 <%def name="mul(name, out_dtype, dtype1, dtype2)">
@@ -171,6 +182,81 @@ WITHIN_KERNEL ${dtypes.ctype(out_dtype)} ${name}(${dtypes.ctype(in_dtype)} x)
     else:
         raise NotImplementedError("Cast from " + str(in_dtype) + " to " + str(out_dtype) +
             " is not supported")
+%>
+    return ${result};
+}
+</%def>
+
+<%def name="conj(name, out_dtype, dtype1)">
+WITHIN_KERNEL ${dtypes.ctype(out_dtype)} ${name}(
+    ${dtypes.ctype(dtype1)} a)
+{
+<%
+    cin = dtypes.is_complex(dtype1)
+    cout = dtypes.is_complex(out_dtype)
+    out_ctr = dtypes.complex_ctr(out_dtype)
+    if cin and cout:
+        result = out_ctr + "(a.x, -a.y)"
+    else:
+	raise NotImplementedError("Complex conjugate of " + str(in_dtype) + " to " + str(out_dtype) +
+            " is not supported")
+%>
+    return ${result};
+}
+</%def>
+
+
+<%def name="norm(name, out_dtype, dtype1)">
+WITHIN_KERNEL ${dtypes.ctype(out_dtype)} ${name}(
+    ${dtypes.ctype(dtype1)} a)
+{
+<%
+    cin = dtypes.is_complex(dtype1)
+    cout = dtypes.is_complex(out_dtype)
+    out_ctr = dtypes.complex_ctr(out_dtype)
+    if cin and cout:
+        result = out_ctr + "(sqrt(a.x * a.x + a.y * a.y), 0)"
+    elif cin and not cout:
+	result = "sqrt(a.x * a.x + a.y * a.y)"
+    elif not cin and cout:
+	result = out_ctr + "(a, 0)"
+    else:
+        raise NotImplementedError("Norm of " + str(in_dtype) + " to " + str(out_dtype) +
+            " is not supported")
+%>
+    return ${result};
+}
+</%def>
+
+
+<%def name="complex_exp(name, out_dtype, dtype1)">
+WITHIN_KERNEL ${dtypes.ctype(out_dtype)} ${name}(
+    ${dtypes.ctype(dtype1)} a)
+{
+<%
+    cin = dtypes.is_complex(dtype1)
+    din = dtypes.is_double(dtype1)
+    iin = dtypes.is_integer(dtype1)
+    
+    if dtypes.is_complex(out_dtype):
+        out_ctr = dtypes.complex_ctr(out_dtype)
+    
+    if cin and din:
+        result = out_ctr + "cdouble_exp(COMPLEX_CTR(double2) (a))"
+    elif cin and not din and not iin:
+        result = out_ctr + "cfloat_exp(COMPLEX_CTR(float2) (a))"
+    elif cin and not din and iin:
+        result = out_ctr + "cfloat_exp(COMPLEX_CTR(float2) (a, 0))"
+    
+    elif not cin and (din or not iin):
+        result ="exp(a)"
+    elif not cin and iin:
+        result ="exp((float) a)"
+    
+    else:
+        raise NotImplementedError("Exp from " + str(dtype1) +
+            " is not supported.")
+        
 %>
     return ${result};
 }

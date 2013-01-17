@@ -50,6 +50,44 @@ class FuncCollector:
         self.functions[name] = ('div', (out, dtype1, dtype2))
         return name
 
+    def conj(self, dtype1, out=None):
+        if out is None:
+            out = dtype1
+        ctypes = dtypes.ctype(dtype1).replace(' ', '_')
+        out_ctype = dtypes.ctype(out).replace(' ', '_')
+
+        name = "_{prefix}_conj__{out}__{signature}".format(
+            prefix=self.prefix, out=out_ctype, signature = '_'.join(ctypes))
+
+        self.functions[name] = ('conj', (out, dtype1))
+        return name
+
+    def norm(self, dtype1, out=None):
+        if out is None:
+            out = dtype1
+        ctypes = dtypes.ctype(dtype1).replace(' ', '_')
+        out_ctype = dtypes.ctype(out).replace(' ', '_')
+
+        name = "_{prefix}_norm__{out}__{signature}".format(
+            prefix=self.prefix, out=out_ctype, signature = '_'.join(ctypes))
+
+        self.functions[name] = ('norm', (out, dtype1))
+        return name
+
+   
+    def complex_exp(self, dtype1, out=None):
+        if out is None:
+            out = dtype1
+        ctypes = dtypes.ctype(dtype1)
+        ctypes = [ctype.replace(' ', '_') for ctype in ctypes]
+        out_ctype = dtypes.ctype(out).replace(' ', '_')
+
+        name = "_{prefix}_complex_exp__{out}__{signature}".format(
+            prefix=self.prefix, out=out_ctype, signature = '_'.join(ctypes))
+
+        self.functions[name] = ('complex_exp', (out, dtype1))
+        return name 
+
     def render(self):
         src = []
         for func_name, params in self.functions.items():
