@@ -111,8 +111,17 @@
 %endfor
 %endif
 
+#if defined(cl_khr_fp64) || defined(cl_amd_fp64)
+<%
+types_ = {'cfloat':['float2', 'float'], 'cdouble':['double2', 'double']}
+%>
+#else
+<%
+types_ = {'cfloat':['float2', 'float']}
+%>
+#endif
 
-%for nn,tp in {'cfloat':['float2', 'float'], 'cdouble':['double2', 'double']}.iteritems():
+%for nn,tp in types_.iteritems():
     WITHIN_KERNEL ${tp[0]} ${nn}_exp(${tp[0]} (a))
     {
          ${tp[1]} expr = exp(a.x);
